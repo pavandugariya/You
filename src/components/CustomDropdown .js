@@ -38,6 +38,7 @@ const CustomDropdown = () => {
                                 }}
                             >
                                 <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{item.country}</Text>
+                                {/* <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{item.country}</Text> */}
                             </TouchableOpacity>
                         )
                     })}
