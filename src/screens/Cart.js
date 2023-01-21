@@ -30,15 +30,36 @@ const Cart = () => {
 
 
 
-    const incrementHandler = (val) => {
+    const incrementHandler = async (item, val) => {
         dispatch(increment(val))
         //setData(data + 1)
+        console.log(item.quantity.value);
+        const dataObj = {
+            "quantity": item.quantity.value
+        }
+        try {
+            const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart/item/${item.item_key}`, dataObj);
+            // console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
     }
-    const decrementHandler = (val) => {
+    const decrementHandler = async (item, val) => {
         if (reducerData.cartarray[val].quantity.value > 1) {
             // console.log(val);
             dispatch(decrement(val))
+            console.log(item.quantity.value);
+            const dataObj = {
+                "quantity": item.quantity.value
+            }
+            try {
+                const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart/item/${item.item_key}`, dataObj);
+                // console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
         }
+
     }
     const deleteHandler = async (value, item) => {
         setShowIndicator(true);
@@ -70,27 +91,15 @@ const Cart = () => {
         }
     }
     const checkOutHandler = async () => {
-        navigation.navigate('AddressPaymentDetails')
-        // const obj = {
-        //     "shipping": {
-        //         "address_1": "Indore",
-        //         "address_2": "bhihar",
-        //         "city": "indore",
-        //         "company": "codes for tomorrow",
-        //         "country": "mindia",
-        //         "first_name": "janaka",
-        //         "last_name": "kumar",
-        //         "phone": "9845848748",
-        //         "postcode": "4656785",
-        //         "state": "madhya bhihar"
-        //     },
-        // }
-        // try {
-        //     const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, obj);
-        //     console.log(res);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        // navigation.navigate('AddressPaymentDetails')
+        try {
+            const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`);
+            const id = res.id;
+            id && navigation.navigate('AddressPaymentDetails', { id: id })
+
+        } catch (error) {
+            console.log(error);
+        }
     }
     return (
         <>
@@ -147,12 +156,12 @@ const Cart = () => {
                                                 <View style={styles.quantity_Box_Style}>
                                                     <Text style={styles.quantity_text_style}>Quantity</Text>
                                                     <TouchableOpacity style={styles.pluse_box_style}
-                                                        onPress={() => decrementHandler(index)} >
+                                                        onPress={() => decrementHandler(item, index)} >
                                                         {minusIcon}
                                                     </TouchableOpacity>
                                                     <Text style={{ color: '#000' }}>{item.quantity.value}</Text>
                                                     <TouchableOpacity style={styles.minus_box_style}
-                                                        onPress={() => incrementHandler(index)}>
+                                                        onPress={() => incrementHandler(item, index)}>
                                                         {plusIcon}
                                                     </TouchableOpacity>
                                                 </View>

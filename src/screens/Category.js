@@ -15,7 +15,7 @@ import * as Animatable from 'react-native-animatable';
 import { deleteData, getData, postData, postDataSecond } from '../api/axios/axiosApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { decrement, increment, addArrayElemets, deleteArrayElemets, addSingleArrayElemets } from '../Redux/Action/CartAction/CartAction';
-const more = <Icone name='swap-vertical-outline' size={30} />
+const more = <Icone name='swap-vertical-outline' size={30} color={'#000'} />
 const plusIcon = <Icone name='add-outline' size={18} color={'#f33'} />
 const minusIcon = <Icone name='remove-outline' size={18} color={'#f33'} />
 
@@ -83,10 +83,6 @@ const Category = () => {
             ToastAndroid.TOP,
         );
         setShowIndicator(true)
-        // const dataObj = {
-        //     "id": item.id.toString(),
-        //     "quantity": "1"
-        // }
         const dataObj = {
             "product_id": item.id.toString(),
             "quantity": '1'
@@ -95,11 +91,11 @@ const Category = () => {
             const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/cocart/v1/add-item/`, dataObj)
             if (res.product_id === item.id) {
                 console.log(res.key);
+                getCardData()
                 const _newProductData = [...productData];
                 _newProductData[index].cartQuantity = 1;
                 _newProductData[index].item_key = res.key;
                 setProductData(_newProductData)
-                getCardData()
                 setShowIndicator(false)
             }
             // console.log(res);
@@ -129,27 +125,54 @@ const Category = () => {
         }
     }
     const IncrementHandler = async (item, index) => {
-        dispatch(increment(index))
+        setShowIndicator(true)
+
         let _newProductData = [...productData];
         _newProductData[index].cartQuantity += 1;
         setProductData(_newProductData)
+        setShowIndicator(false)
+
+        const dataObj = {
+            "quantity": item.cartQuantity
+        }
+        try {
+            const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart/item/${item.item_key}`, dataObj);
+            getCardData();
+        } catch (error) {
+            console.log(error);
+        }
     }
     const DecrementHandler = async (item, index) => {
         setShowIndicator(true)
         if (item.cartQuantity === 1) {
             try {
+                let _newProductData = [...productData];
+                _newProductData[index].cartQuantity -= 1;
+                setProductData(_newProductData)
+                setShowIndicator(false);
                 const res = await deleteData(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart/item/${item.item_key}`)
                 getCardData()
                 setShowIndicator(false);
             } catch (error) {
                 console.log(error);
             }
+        } else {
+            let _newProductData = [...productData];
+            _newProductData[index].cartQuantity -= 1;
+            setProductData(_newProductData)
+            setShowIndicator(false);
+            const dataObj = {
+                "quantity": item.cartQuantity
+            }
+            try {
+                const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart/item/${item.item_key}`, dataObj);
+                setShowIndicator(false)
+                getCardData();
+            } catch (error) {
+                console.log(error);
+            }
         }
-        dispatch(decrement(index))
-        let _newProductData = [...productData];
-        _newProductData[index].cartQuantity -= 1;
-        setProductData(_newProductData)
-        setShowIndicator(false);
+
     }
 
     return (
@@ -256,11 +279,7 @@ const Category = () => {
                                         style={styles.box_inner_container}
                                         onPress={() => { navigation.navigate('Category') }}>
                                         <TouchableOpacity style={{ width: '100%', }}
-                                            onPress={() => navigation.navigate('ProductDetail', {
-
-                                                id: item.id
-                                            })}>
-
+                                            onPress={() => navigation.navigate('ProductDetail', { id: item.id })}>
                                             <Image
                                                 source={{ uri: item.images ? item.images[0].src : 'https://cdn-icons-png.flaticon.com/512/9184/9184014.png' }}
                                                 style={{ height: 200, width: '90%', marginVertical: 5 }}

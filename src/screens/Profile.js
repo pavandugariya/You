@@ -5,10 +5,14 @@ import Icons from 'react-native-vector-icons/MaterialIcons'
 import { color } from 'react-native-reanimated'
 import { useNavigation } from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useSelector } from 'react-redux';
 
 const Profile = () => {
     const navigation = useNavigation();
     const [userImage, setuserImage] = useState('')
+    const addressReducerData = useSelector((state) => state.AddressR);
+    const name = addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName
+    const address = addressReducerData.addressData.addressOne;
     const imagePickerHandler = async () => {
         try {
 
@@ -48,7 +52,6 @@ const Profile = () => {
                     style={{ height: 76, width: 76, borderRadius: 50 }}
                 />
                 <TouchableOpacity style={styles.edite_box_style}
-
                     onPress={() => {
                         Alert.alert('Upload Photo', 'Choose Your Profile Picture',
                             [
@@ -79,11 +82,10 @@ const Profile = () => {
                     <Icons name='edit' style={styles.edite_icon_style} />
                 </TouchableOpacity>
 
-                <Text style={styles.name_style}>Rosina Doe</Text>
+                <Text style={styles.name_style}>{name}</Text>
                 <View style={styles.img_box_inner_container}>
                     <Icon name='location-outline' size={20} style={styles.icon_image_container} />
-                    <Text style={styles.img_box_address_text}>Address: 43 Oxford Road M13 4GR
-                        Manchester, UK </Text>
+                    <Text style={styles.img_box_address_text}>{address}</Text>
                 </View>
             </View>
             <View style={styles.bottom_container}>
@@ -154,6 +156,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway',
         fontWeight: '600',
         marginVertical: 15,
+        textTransform: "capitalize"
+
     },
     img_box_inner_container: {
         flexDirection: 'row',
@@ -171,7 +175,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '400',
         lineHeight: 17,
-        color: '#000'
+        color: '#000',
+        textTransform: "capitalize"
     },
     bottom_container: {
         width: '100%',

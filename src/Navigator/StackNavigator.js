@@ -20,6 +20,7 @@ import ForgotPassword from '../screens/ForgotPassword';
 //usereducer 
 import { useSelector, useDispatch, batch } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons'
+import OrderDetails from '../screens/OrderDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,7 @@ const StackNavigator = () => {
                             <Stack.Screen name="EditAddress" component={EditAddress} />
 
                             <Stack.Screen name="Order History" component={OrderHistory} />
+                            <Stack.Screen name="Order Details" component={OrderDetails} />
                             <Stack.Screen name="Favorites" component={Favorites} options={{ headerShown: false }} />
                             <Stack.Screen name="Category" component={Category} options={{
                                 headerRight: () => (

@@ -37,14 +37,14 @@ const BottomNavigator = () => {
             />
             <Tab.Screen name="Notification" component={Notification}
                 options={{
-                    tabBarIcon: () => <Ionicons name='notifications-outline' size={25} />
+                    tabBarIcon: () => <Ionicons name='notifications-outline' size={25} color='blue' />
                 }} />
             <Tab.Screen name="Profile" component={Profile} options={{
-                tabBarIcon: () => <Ionicons name='person-outline' size={25} />
+                tabBarIcon: () => <Ionicons name='person-outline' size={25} color='blue' />
             }} />
             <Tab.Screen name="Cart" component={Cart} options={{
                 tabBarBadge: badgesCount,
-                tabBarIcon: () => <Ionicons name='cart-outline' size={25} />
+                tabBarIcon: () => <Ionicons name='cart-outline' size={25} color='blue' />
             }} />
         </Tab.Navigator>
     )

@@ -5,11 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import CheckBox from '@react-native-community/checkbox';
 import CustomDropdown from '../components/CustomDropdown ';
+import { useSelector, useDispatch } from 'react-redux';
+import { AddAddressHandler, SameAddressHandler } from '../Redux/Action/AddressAction/AddressAction';
 
 const EditAddress = () => {
     const navigation = useNavigation();
+    const addressReducerData = useSelector((state) => state.AddressR);
+    const dispatch = useDispatch();
     const [toggleCheckBox, setToggleCheckBox] = useState(true)
-
     const [data, setData] = useState({
         firstName: '',
         lastName: '',
@@ -31,6 +34,13 @@ const EditAddress = () => {
         BillingmobileNo: '',
 
     });
+    const saveHandler = () => {
+        dispatch(AddAddressHandler(data))
+        dispatch(SameAddressHandler(toggleCheckBox))
+        alert('Save')
+        navigation.goBack()
+
+    }
 
     return (
         <View style={styles.container}>
@@ -40,7 +50,7 @@ const EditAddress = () => {
                 </View>
                 <View style={styles.bottom_container}>
                     <Text style={styles.shipping_detail_txt}>Shipping Details</Text>
-                    <CustomDropdown />
+                    {/* <CustomDropdown /> */}
                     <View style={{
                         flexDirection: 'row',
                         marginHorizontal: 30,
@@ -333,10 +343,7 @@ const EditAddress = () => {
                         marginHorizontal={30}
                         marginVertical={20}
                         color={'#f2f2f5'}
-                        onPress={() => {
-                            alert('Save')
-                            navigation.navigate('AddressPaymentDetails')
-                        }}
+                        onPress={() => saveHandler()}
                     />
 
                 </View>

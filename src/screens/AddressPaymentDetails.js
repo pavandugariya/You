@@ -3,36 +3,40 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ButtonField from '../components/ButtonField';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import { useSelector } from 'react-redux';
 
 const AddressPaymentDetails = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const addressReducerData = useSelector((state) => state.AddressR);
+  const CartReducerData = useSelector((state) => state.CartR);
+  console.log(CartReducerData.totalPrice);
+  // const { id } = route.params;
   return (
     <View
-      // colors={['#051937', '#AAD9DF']}
-      // start={{ x: 0, y: 0 }}
-      // end={{ x: 1, y: 0.5 }}
       style={styles.container}>
       <ScrollView>
-
         {/* shipping code */}
         <View style={styles.shipping_container} >
           <Text style={styles.shipping_text_style}>Shipping information </Text>
 
           <View style={styles.text_icon_container}>
             <Ionicons name='person-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 17 }]} >Kalika Mishra </Text>
+            <Text
+              style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
+              {addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName}</Text>
           </View>
 
           <View style={styles.text_icon_container}>
             <Ionicons name='location-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} >Codes For Tomorrow Veena nagar B-35 MR-10 Indore </Text>
+            <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >{addressReducerData.addressData.addressOne} </Text>
           </View>
           <View style={styles.text_icon_container}>
             <Ionicons name='call-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} > 9977917065 </Text>
+            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} > {addressReducerData.addressData.mobileNo}</Text>
           </View>
           <TouchableOpacity style={styles.change_btn}
             onPress={() => navigation.navigate('EditAddress')}
@@ -47,16 +51,19 @@ const AddressPaymentDetails = () => {
 
           <View style={styles.text_icon_container}>
             <Ionicons name='person-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 17 }]} >Kalika Mishra </Text>
+            <Text style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
+              {addressReducerData.sameAddress ? addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName : addressReducerData.addressData.BillingfirstName + ' ' + addressReducerData.addressData.BillinglastName}</Text>
           </View>
 
           <View style={styles.text_icon_container}>
             <Ionicons name='location-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} >Codes For Tomorrow Veena nagar B-35 MR-10 Indore, </Text>
+            <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >
+              {addressReducerData.sameAddress ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne} </Text>
           </View>
           <View style={styles.text_icon_container}>
             <Ionicons name='call-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} > 9977917065 </Text>
+            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} >
+              {addressReducerData.sameAddress ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo} </Text>
           </View>
         </View>
 
@@ -83,7 +90,7 @@ const AddressPaymentDetails = () => {
               <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Discount</Text>
             </View>
             <View style={styles.ordert_inner_second_container}>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >5000.00</Text>
+              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{CartReducerData.totalPrice}.00</Text>
               <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >100.00</Text>
               <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >-2000.00</Text>
             </View>
