@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomHeader from '../components/CustomHeader';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { colors } from '../utils/color';
 
-const notificationIcon = <Ionicons name='notifications-outline' size={18} color={'#5956E9'} />
+const notificationIcon = <Ionicons name='notifications-outline' size={18} color={colors._theme_primary_color} />
 const notificationData = [
     {
         name: 'Detailmax Prime X5',
@@ -48,6 +49,7 @@ const Notification = () => {
                     <CustomHeader
                         icon_name='reorder-three-outline'
                         icon_size={40}
+                        icon_color={'#000'}
                         backgroundColor={'#fff'}
                         textInput
                         onPressLeftIcon={() => {
@@ -56,7 +58,7 @@ const Notification = () => {
                         value={searchText}
                         onChangeText={(val) => searchHandler(val)}
                     />
-                    <Text style={{ marginHorizontal: 20, marginTop: 10, fontFamily: 'Raleway', fontSize: 17, color: '#5956E9' }}>{`Notifications(${notificationD.length})`}</Text>
+                    <Text style={{ marginHorizontal: 35, marginTop: 15, fontFamily: 'Raleway', fontSize: 17, color: colors._theme_primary_color }}>{`Notifications(${notificationD.length})`}</Text>
                     <View style={styles.top_container}>
                         <FlatList
                             data={notificationD}
@@ -129,7 +131,7 @@ const EmptyNotification = ({ }) => {
                 style={{ position: 'absolute', top: 20, left: 20 }}>
                 {back}
             </TouchableOpacity>
-            <Ionicons name='notifications-outline' size={70} color={'#5956E9'}
+            <Ionicons name='notifications-outline' size={70} color={colors._theme_primary_color}
                 style={{ transform: [{ rotate: '-15deg' }], }}
             />
             <Text style={{ fontFamily: 'Raleway', fontSize: 20, marginVertical: 50 }}>You currently have no notifications</Text>
@@ -141,11 +143,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5F5F8',
+        backgroundColor: colors._bg_color,
     },
     container2: {
         flex: 1,
-        backgroundColor: '#F5F5F8'
+        backgroundColor: colors._bg_color,
     },
     top_container: {
         top: 30,
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
     notification_top_box: {
         height: 60,
         width: '90%',
+        alignSelf: 'center',
         backgroundColor: '#f2f5f5',
         margin: 10,
         paddingHorizontal: 12,
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.27,
         shadowRadius: 4.65,
 
-        elevation: 6,
+        elevation: 3,
     },
     notification_inner_box: {
         marginHorizontal: 20,

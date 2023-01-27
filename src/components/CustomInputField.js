@@ -39,10 +39,8 @@ export default CustomInputField
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-
         marginVertical: 10,
         paddingLeft: 0,
-
 
     },
     top_container: {

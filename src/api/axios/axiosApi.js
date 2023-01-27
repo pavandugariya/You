@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { addArrayElemets } from '../../Redux/Action/CartAction/CartAction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // get data from api 
@@ -20,8 +19,6 @@ const getData = async (url, params = {}) => {
         console.log(err, 'error');
         return err;
     });
-    // const data = JSON.stringify(res.data[0]);
-    // console.log(data);
     return res.data
 }
 
@@ -55,7 +52,7 @@ const postDataSecond = async (url, data) => {
     return res.data;
 }
 
-// post data from api 
+// delete data from api 
 const deleteData = async (url, data) => {
     const val = await getUserTokenData();
     const res = await axios.delete(url,
@@ -68,6 +65,21 @@ const deleteData = async (url, data) => {
     });
     return res;
 }
+//put data api
+
+const putData = async (url, data) => {
+    const val = await getUserTokenData();
+    const res = await axios.put(url, data,
+        {
+            headers: { Authorization: `Bearer ${val}` }
+        }
+    ).catch(err => {
+        console.log(err, 'error');
+        return err;
+    });
+    return res;
+}
+
 const getUserTokenData = async () => {
     try {
         const value = await AsyncStorage.getItem('userToken')
@@ -78,4 +90,4 @@ const getUserTokenData = async () => {
     }
 }
 
-export { getData, postData, deleteData, postDataSecond };
+export { getData, postData, deleteData, postDataSecond, putData };

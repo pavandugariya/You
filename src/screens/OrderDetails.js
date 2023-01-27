@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { colors } from '../utils/color';
 
 const OrderDetails = () => {
     const route = useRoute();
@@ -72,7 +73,7 @@ export default OrderDetails
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F8',
+        backgroundColor: colors._bg_color,
     },
     top_container: {
         width: '98%',
@@ -157,10 +158,10 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 3,
+            height: 1,
         },
-        shadowOpacity: 0.29,
-        shadowRadius: 4.65,
-        elevation: 7,
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+        elevation: 2,
     }
 })

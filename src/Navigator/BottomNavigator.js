@@ -24,10 +24,11 @@ const BottomNavigator = () => {
             shifting={true}
             screenOptions={{
                 headerShown: false,
-
             }}>
             <Tab.Screen name="Home" component={Home}
                 options={{
+                    // tabBarColor: '#5956E9',
+                    // title: 'Home',*asAnimatable
                     tabBarIcon: () => {
                         return (
                             <Ionicons name='home-outline' size={20} color='blue' />

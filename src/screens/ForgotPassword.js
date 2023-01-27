@@ -3,15 +3,21 @@ import React, { useState, useEffect } from 'react'
 import CustomInputField from '../components/CustomInputField'
 import ButtonField from '../components/ButtonField';
 import { useNavigation } from '@react-navigation/native';
+import { postData } from '../api/axios/axiosApi';
 
 const ForgotPassword = () => {
     const [email, setemail] = useState('');
     const [isVisible, setisVisible] = useState(true)
     const navigation = useNavigation();
-    const resetHandler = () => {
+    const resetHandler = async () => {
         if (email.length > 10) {
-            alert('password send your email id')
-            navigation.replace('SignIn')
+            const res = await postData(`https://automart.codesfortomorrow.com/wp-json/user-operations/v1/forget_password`, { email });
+            if (res === 'Password reset link has been sent to your registered email.') {
+                navigation.replace('SignIn')
+                alert(res)
+            } else {
+                alert(res)
+            }
         } else {
             alert('Fill correct email id')
         }

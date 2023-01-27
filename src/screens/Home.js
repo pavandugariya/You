@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import HomeModal from '../components/HomeModal';
+import { colors } from '../utils/color';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 const Home = () => {
@@ -102,7 +103,7 @@ const Home = () => {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f2f2f2' }}>
+        <View style={{ flex: 1, backgroundColor: colors._bg_color }}>
             <CustomHeader
                 // headerName={'Welcome'}
                 icon_name='reorder-three-outline'
@@ -122,8 +123,8 @@ const Home = () => {
                 value={searchInputText}
                 onChangeText={(val) => searchFilter(val)}
             />
-            <ScrollView>
-                <View style={{ marginHorizontal: 50, marginTop: 20 }}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{ marginHorizontal: 20, marginTop: 20 }}>
                     <Text style={{
                         fontFamily: 'Raleway-Black',
                         color: '#000',
@@ -151,20 +152,43 @@ const Home = () => {
                                 style={styles.box_inner_container}
                                 onPress={() => {
                                     navigation.navigate('Category', {
-                                        slug: item.slug
+                                        id: item.id
                                     })
                                 }}>
                                 <Image
-                                    source={{ uri: item.image ? item.image.src : 'https://png.pngtree.com/png-clipart/20210704/original/pngtree-car-lovers-real-white-cars-side-view-head-lamp-light-headlight-png-image_6479524.jpg' }}
-                                    style={{ height: '70%', width: '70%', marginVertical: 5, }}
-                                    resizeMode="stretch"
+                                    source={{ uri: item.image ? item.image.src : 'https://icon2.cleanpng.com/20180809/egp/kisspng-car-wash-clip-art-vector-graphics-logo-sara-lawson-car-wash-and-valeting-services-galway-5b6c0c33b3ddd8.1149339815338076677367.jpg' }}
+                                    style={{ height: undefined, width: '60%', marginTop: 15, borderRadius: 10, aspectRatio: 1 }}
+                                // resizeMode="stretch"
                                 />
                                 <Text numberOfLines={1}
-                                    style={{ fontSize: 20, color: '#000', fontFamily: 'Raleway', marginTop: 10, fontWeight: '600', }}>{item.name}</Text>
+                                    style={{ fontSize: 18, color: '#000', fontFamily: 'Raleway', marginTop: 20, fontWeight: '600', }}>{item.name}</Text>
                             </TouchableOpacity>
                         )
                     })
                     }
+                </View>
+                <View style={styles.go_service_guarantee}>
+                    <Text style={[styles.txt_style, { fontSize: 17, fontWeight: "700" }]}>OurService Guarantee</Text>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                        <View style={styles.go_service_guarantee_inner_container}>
+                            <View style={[styles.go_service_guarantee_inner_container2, { backgroundColor: '#f4f9ff' }]}>
+                                <Icon name='local-shipping' size={18} color={'#6AC1FB'} />
+                                <Text style={styles.text_guarantee_container}>Free Pickup Drop</Text>
+                            </View>
+                            <View style={[styles.go_service_guarantee_inner_container2, { backgroundColor: '#fcf5fd' }]}>
+                                <Icon name='settings' size={18} color={'#B2B1FF'} />
+                                <Text style={styles.text_guarantee_container}>Genuine Product</Text>
+                            </View>
+                            <View style={[styles.go_service_guarantee_inner_container2, { backgroundColor: '#f5fff6' }]}>
+                                <Icon name='verified-user' size={18} color={'#44A037'} />
+                                <Text style={styles.text_guarantee_container}>30 Days Warranty</Text>
+                            </View>
+                            <View style={[styles.go_service_guarantee_inner_container2, { backgroundColor: '#fffee8' }]}>
+                                <Icon name='account-balance-wallet' size={18} color={'#CA8446'} />
+                                <Text style={styles.text_guarantee_container}>Affordable Prices</Text>
+                            </View>
+                        </View>
+                    </ScrollView>
                 </View>
             </ScrollView>
             <HomeModal
@@ -189,6 +213,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
+        backgroundColor: colors._bg_color,
 
     },
     item_box: {
@@ -216,8 +241,8 @@ const styles = StyleSheet.create({
         top: 30,
     },
     box_inner_container: {
-        height: 200,
-        width: '46%',
+        height: 180,
+        width: '47%',
         backgroundColor: '#fff',
         borderRadius: 20,
         // justifyContent: 'center',
@@ -235,5 +260,45 @@ const styles = StyleSheet.create({
         shadowRadius: 1.41,
 
         elevation: 2,
+    },
+    go_service_guarantee: {
+        width: '93%',
+        alignSelf: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        marginBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.20,
+        shadowRadius: 1.41,
+
+        elevation: 2,
+    },
+    go_service_guarantee_inner_container: {
+        flexDirection: 'row',
+        marginVertical: 10,
+        // marginHorizontal: 10,
+    },
+    go_service_guarantee_inner_container2: {
+        width: 150,
+        height: 70,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        justifyContent: 'center',
+        marginHorizontal: 10,
+        // alignItems: 'center'
+        borderRadius: 10,
+    },
+    text_guarantee_container: {
+        color: '#000',
+        fontSize: 13,
+        fontFamily: 'Raleway',
+        fontWeight: "700",
+        paddingVertical: 5,
     }
 })

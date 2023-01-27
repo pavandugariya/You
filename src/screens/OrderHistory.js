@@ -4,6 +4,7 @@ import ButtonField from '../components/ButtonField'
 import { useNavigation } from '@react-navigation/native';
 import HomeModal from '../components/HomeModal';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { colors } from '../utils/color';
 const data = [
     {
         name: 'Polishing',
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
         top: 10,
     },
     top_container: {
-        backgroundColor: '#F5F5F8',
+        backgroundColor: colors._bg_color,
         flex: 1,
     },
     top_bottom_container: {

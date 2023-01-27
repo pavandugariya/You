@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { postData } from '../api/axios/axiosApi';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RestoreToken, isLoadingSet } from '../Redux/Action/AuthAction/AuthAction';
+import { RestoreToken, isLoadingSet, setEmailId } from '../Redux/Action/AuthAction/AuthAction';
 
 const LoginScreen = () => {
     const [userName, setUserName] = useState('');
@@ -29,11 +29,8 @@ const LoginScreen = () => {
                 alert('please fill correct details')
             }
             else {
-                // console.log('dasda ' + res);
-                const data = res.token
-                await storeTokenData(data);
+                await storeTokenData(res);
             }
-
         } catch (error) {
             console.log('Error' + error);
         }
@@ -41,9 +38,11 @@ const LoginScreen = () => {
     }
     const storeTokenData = async (value) => {
         try {
-            const res = await AsyncStorage.setItem('userToken', value)
-            dispatch(RestoreToken(value))
-            console.log(res);
+            const res = await AsyncStorage.setItem('userToken', value.token)
+            const email = await AsyncStorage.setItem('userEmail', value.user_email)
+            dispatch(RestoreToken(value.token))
+            dispatch(setEmailId(value.user_email))
+
         } catch (e) {
             console.log(e);
         }
@@ -53,59 +52,120 @@ const LoginScreen = () => {
         <View style={[styles.container,]} >
             {/* { backgroundColor: themes == 'LIGHT' ? '#5956EA' : '#000' } */}
             <Text style={[styles.welcome_text_style,]}>Welcome back</Text>
-            <View style={[styles.bottom_container]}>
-                <ScrollView>
-                    <Text style={[styles.bottom_top_text_style]}>Login</Text>
-                    <CustomInputField
-                        leftIcon={'person-outline'}
-                        secondRightIcon={'eye-off-outline'}
-                        textname={'User Name'}
-                        placeholderText={'Enter your user name '}
-                        textValue={userName}
-                        onChangeTextHandler={(val) => setUserName(val)}
-                        placeholderTextColor={'#868686'}
+            <ScrollView style={[styles.bottom_container]}>
+                <Text style={[styles.bottom_top_text_style]}>Login</Text>
+                <CustomInputField
+                    leftIcon={'person-outline'}
+                    secondRightIcon={'eye-off-outline'}
+                    textname={'User Name'}
+                    placeholderText={'Enter your user name '}
+                    textValue={userName}
+                    onChangeTextHandler={(val) => setUserName(val)}
+                    placeholderTextColor={'#868686'}
 
-                    // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
-                    // color={themes == 'LIGHT' ? '#000' : '#fff'}
-                    />
-                    <CustomInputField
-                        leftIcon={'lock-closed-outline'}
-                        rightIcon={'eye-outline'}
-                        secondRightIcon={'eye-off-outline'}
-                        textname={'Password'}
-                        placeholderText={'Enter your password '}
-                        isVisible={isVisible}
-                        textValue={password}
-                        onChangeTextHandler={(val) => setPassword(val)}
-                        rightIconOnpressHandler={() => setisVisible(!isVisible)}
-                        placeholderTextColor={'#868686'}
-                    // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
+                // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
+                // color={themes == 'LIGHT' ? '#000' : '#fff'}
+                />
+                <CustomInputField
+                    leftIcon={'lock-closed-outline'}
+                    rightIcon={'eye-outline'}
+                    secondRightIcon={'eye-off-outline'}
+                    textname={'Password'}
+                    placeholderText={'Enter your password '}
+                    isVisible={isVisible}
+                    textValue={password}
+                    onChangeTextHandler={(val) => setPassword(val)}
+                    rightIconOnpressHandler={() => setisVisible(!isVisible)}
+                    placeholderTextColor={'#868686'}
+                // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
 
-                    />
+                />
 
-                    <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
-                        <Text style={styles.fogote_pass_text_style}>Forgot password?</Text>
-                    </TouchableOpacity>
-                    <ButtonField
-                        bgColor={'#582ED0'}
-                        loginBtnText={'Login'}
-                        color={'#fff'}
-                        height={60}
-                        marginHorizontal={0}
-                        onPress={() => loginHandler()}
-                    />
-                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                        <Text style={styles.create_account_text}> Create Account</Text>
-                    </TouchableOpacity>
-                </ScrollView>
-            </View>
+
+                <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
+                    <Text style={styles.fogote_pass_text_style}>Forgot password?</Text>
+                </TouchableOpacity>
+                <ButtonField
+                    bgColor={'#582ED0'}
+                    loginBtnText={'Login'}
+                    color={'#fff'}
+                    height={60}
+                    marginHorizontal={0}
+                    onPress={() => loginHandler()}
+                />
+                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={styles.create_account_text}> Create Account</Text>
+                </TouchableOpacity>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+            </ScrollView>
+            {/* <View style={[styles.bottom_container]}>
+               
+            </View> */}
+
             <View style={styles.circle}></View>
             <View style={[styles.circle2,]}></View>
             <View style={[styles.circle3,]}></View>
         </View>
     )
 }
+// {
+//     <Text style={[styles.bottom_top_text_style]}>Login</Text>
+//                 <CustomInputField
+//                     leftIcon={'person-outline'}
+//                     secondRightIcon={'eye-off-outline'}
+//                     textname={'User Name'}
+//                     placeholderText={'Enter your user name '}
+//                     textValue={userName}
+//                     onChangeTextHandler={(val) => setUserName(val)}
+//                     placeholderTextColor={'#868686'}
 
+//                 // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
+//                 // color={themes == 'LIGHT' ? '#000' : '#fff'}
+//                 />
+//                 <CustomInputField
+//                     leftIcon={'lock-closed-outline'}
+//                     rightIcon={'eye-outline'}
+//                     secondRightIcon={'eye-off-outline'}
+//                     textname={'Password'}
+//                     placeholderText={'Enter your password '}
+//                     isVisible={isVisible}
+//                     textValue={password}
+//                     onChangeTextHandler={(val) => setPassword(val)}
+//                     rightIconOnpressHandler={() => setisVisible(!isVisible)}
+//                     placeholderTextColor={'#868686'}
+//                 // colors={themes == 'LIGHT' ? '#868686' : '#fff'}
+
+//                 />
+
+
+//                 <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
+//                     <Text style={styles.fogote_pass_text_style}>Forgot password?</Text>
+//                 </TouchableOpacity>
+//                 <ButtonField
+//                     bgColor={'#582ED0'}
+//                     loginBtnText={'Login'}
+//                     color={'#fff'}
+//                     height={60}
+//                     marginHorizontal={0}
+//                     onPress={() => loginHandler()}
+//                 />
+//                 <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+//                     <Text style={styles.create_account_text}> Create Account</Text>
+//                 </TouchableOpacity>
+
+// }
 export default LoginScreen
 
 const styles = StyleSheet.create({

@@ -35,16 +35,36 @@ const EditAddress = () => {
 
     });
     const saveHandler = () => {
-        dispatch(AddAddressHandler(data))
-        dispatch(SameAddressHandler(toggleCheckBox))
-        alert('Save')
-        navigation.goBack()
+        if (data.firstName.length >= 4 && data.lastName.length >= 4 && data.addressOne.length >= 4 && data.city.length >= 4 && data.state.length > 1 && data.mobileNo.length >= 4 && data.pinCode.length) {
+
+            dispatch(AddAddressHandler(data))
+            dispatch(SameAddressHandler(toggleCheckBox))
+            alert('Save')
+            navigation.goBack()
+        } else {
+            if (data.firstName.length < 4) {
+                alert('please provide first name')
+            } else if (data.lastName.length < 4) {
+                alert('please provide last name')
+            } else if (data.addressOne.length < 4) {
+                alert('please fill address')
+            } else if (data.city.length < 2) {
+                alert('please fill city')
+            } else if (data.pinCode.length < 4) {
+                alert('please fill city')
+            } else if (data.mobileNo.length < 4) {
+                alert('please fill city')
+            } else {
+                alert('please provide all information')
+            }
+
+        }
 
     }
 
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.top_container}>
                     <Text style={{ fontFamily: 'Raleway-Black', fontSize: 30, color: '#000' }}>Fill your information</Text>
                 </View>
@@ -65,6 +85,7 @@ const EditAddress = () => {
                             <Text style={[styles.txt_style,]}>First Name</Text>
                             <TextInput
                                 placeholder='First Name'
+                                placeholderTextColor={'#777'}
                                 style={[styles.text_input_txt_style,]}
                                 value={data.firstName}
                                 onChangeText={(val) => setData({
@@ -82,6 +103,8 @@ const EditAddress = () => {
                             <Text style={[styles.txt_style,]}>Last Name</Text>
                             <TextInput
                                 placeholder='Last Name'
+                                placeholderTextColor={'#777'}
+
                                 style={[styles.text_input_txt_style, {
                                     borderWidth: 1,
                                     borderColor: '#582ED0',
@@ -101,6 +124,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>Address 1</Text>
                         <TextInput
                             placeholder='Address 1...'
+                            placeholderTextColor={'#777'}
+
                             multiline={true}
                             style={styles.text_input_txt_style}
                             value={data.addressOne}
@@ -114,6 +139,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>Address 2 </Text>
                         <TextInput
                             placeholder='Address 2...'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             multiline={true}
                             value={data.addressTwo}
@@ -128,6 +155,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>City</Text>
                         <TextInput
                             placeholder='City'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             value={data.city}
                             onChangeText={(val) => setData({
@@ -142,6 +171,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>State</Text>
                         <TextInput
                             placeholder='State'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             value={data.state}
                             onChangeText={(val) => setData({
@@ -154,6 +185,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>Country</Text>
                         <TextInput
                             placeholder='Country'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             value={data.country}
                             onChangeText={(val) => setData({
@@ -166,6 +199,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>Pin code</Text>
                         <TextInput
                             placeholder='Enter pin code'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             keyboardType={'number-pad'}
                             value={data.pinCode}
@@ -179,6 +214,8 @@ const EditAddress = () => {
                         <Text style={styles.txt_style}>Mobile No</Text>
                         <TextInput
                             placeholder='+91 5254989274'
+                            placeholderTextColor={'#777'}
+
                             style={styles.text_input_txt_style}
                             keyboardType={'number-pad'}
                             maxLength={10}
@@ -214,6 +251,8 @@ const EditAddress = () => {
                                     <Text style={styles.txt_style}>First Name</Text>
                                     <TextInput
                                         placeholder='First Name'
+                                        placeholderTextColor={'#777'}
+
                                         style={styles.text_input_txt_style}
                                         value={data.BillingfirstName}
                                         onChangeText={(val) => setData({
@@ -229,6 +268,8 @@ const EditAddress = () => {
                                     <Text style={styles.txt_style}>First Name</Text>
                                     <TextInput
                                         placeholder='Last Name'
+                                        placeholderTextColor={'#777'}
+
                                         style={styles.text_input_txt_style}
                                         value={data.BillinglastNametName}
                                         onChangeText={(val) => setData({
@@ -242,6 +283,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>Address 1</Text>
                                 <TextInput
                                     placeholder='Address 1...'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     multiline={true}
                                     value={data.BillingaddressOne}
@@ -256,6 +299,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>Address 2 </Text>
                                 <TextInput
                                     placeholder='Address 2...'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     multiline={true}
                                     value={data.BillingaddressTwo}
@@ -270,6 +315,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>City</Text>
                                 <TextInput
                                     placeholder='City'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     value={data.Billingcity}
                                     onChangeText={(val) => setData({
@@ -283,6 +330,8 @@ const EditAddress = () => {
                                 <Text>State</Text>
                                 <TextInput
                                     placeholder='State'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     value={data.Billingstate}
                                     onChangeText={(val) => setData({
@@ -296,6 +345,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>Country</Text>
                                 <TextInput
                                     placeholder='Country'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     value={data.Billingcountry}
                                     onChangeText={(val) => setData({
@@ -308,6 +359,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>Pin code</Text>
                                 <TextInput
                                     placeholder='Enter pin code'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     keyboardType={'number-pad'}
                                     value={data.BillingpinCode}
@@ -321,6 +374,8 @@ const EditAddress = () => {
                                 <Text style={styles.txt_style}>Mobile No</Text>
                                 <TextInput
                                     placeholder='+91 5254989274'
+                                    placeholderTextColor={'#777'}
+
                                     style={styles.text_input_txt_style}
                                     keyboardType={'number-pad'}
                                     value={data.BillingmobileNo}
@@ -358,7 +413,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#dddddd',
+        backgroundColor: '#F5F5F8',
 
     },
     top_container: {

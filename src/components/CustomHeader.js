@@ -34,13 +34,15 @@ const CustomHeader = ({ headerName, icon_name, icon_size, icon_color, header_txt
             }{
                 textInput &&
                 <View style={{
-                    width: 270, borderWidth: 0.5, borderRadius: 20, marginTop: 10, height: 42,
-                    alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10
+                    width: 270, borderWidth: .5, borderRadius: 18, marginTop: 10, height: 42,
+                    alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10, paddingRight: 20
                 }} >
-                    <Ionicons name={'search-outline'} size={30} color={icon_color} />
+                    <Ionicons name={'search-outline'} size={24} color={icon_color} />
                     <TextInput
                         placeholder="Search"
-                        style={{ flex: 1 }}
+                        placeholderTextColor={icon_color}
+                        style={{ flex: 1, color: icon_color }}
+
                         {...rest}
                     />
                 </View>

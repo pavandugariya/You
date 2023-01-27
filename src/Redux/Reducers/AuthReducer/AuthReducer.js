@@ -1,5 +1,6 @@
 const initialState = {
     userToken: null,
+    userEmail: null,
     isLoading: true,
 };
 
@@ -27,6 +28,11 @@ const AuthReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: action.payload
             };
+        case 'SET_EMAIL':
+            return {
+                ...state,
+                userEmail: action.payload
+            }
 
         default:
             return state;

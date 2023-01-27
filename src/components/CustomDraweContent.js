@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RestoreToken } from '../Redux/Action/AuthAction/AuthAction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors } from '../utils/color';
 
 
 const CustomDraweContent = ({ iconColor, iconSize }) => {
@@ -47,7 +48,7 @@ const CustomDraweContent = ({ iconColor, iconSize }) => {
                             onPress={() => { navigation.navigate('Profile') }}
                         />
                         <DrawerItem
-                            icon={() => <Icone name={'cart-outline'} size={iconSize} color={iconColor} />}
+                            icon={() => <Icones name={'shopping-bag'} size={iconSize} color={iconColor} />}
                             label={'My Orders'}
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
                             onPress={() => { navigation.navigate('Order History') }}
@@ -58,15 +59,15 @@ const CustomDraweContent = ({ iconColor, iconSize }) => {
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
                             onPress={() => { navigation.navigate('Favorites') }}
                         />
-                        <DrawerItem
+                        {/* <DrawerItem
                             icon={() => <Icones name={'shopping-bag'} size={iconSize} color={iconColor} />}
                             label={'Delivery'}
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
                             onPress={() => { navigation.navigate('Home') }}
-                        />
+                        /> */}
                         <DrawerItem
-                            icon={() => <Icone name={'settings-outline'} size={iconSize} color={iconColor} />}
-                            label={'Settings'}
+                            icon={() => <Icones name={'contact-support'} size={iconSize} color={iconColor} />}
+                            label={'Help'}
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
                             onPress={() => { navigation.navigate('Home') }}
                         />
@@ -98,32 +99,35 @@ export default CustomDraweContent
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#5956E9'
+        backgroundColor: colors._theme_primary_color
     },
     circle: {
         height: 75,
         width: 75,
-        backgroundColor: '#817EFF',
+        backgroundColor: colors._theme_secondary_color,
         position: 'absolute',
         right: 150,
         bottom: 230,
         borderRadius: 50,
+        zIndex: -50
     },
     circle2: {
         height: 25,
         width: 25,
-        backgroundColor: '#5956E9',
+        backgroundColor: colors._theme_primary_color,
         position: 'absolute',
         right: 50,
         bottom: 300,
         borderRadius: 50,
         borderWidth: 5,
-        borderColor: '#817EFF',
+        borderColor: colors._theme_secondary_color,
+        zIndex: -50
+
     },
     circle3: {
         height: 80,
         width: 80,
-        backgroundColor: '#817EFF',
+        backgroundColor: colors._theme_secondary_color,
         position: 'absolute',
         right: 10,
         top: -30,

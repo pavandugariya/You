@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Platform } from 'react-native'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ButtonField from '../components/ButtonField';
@@ -7,37 +7,95 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import { useSelector } from 'react-redux';
+import { putData } from '../api/axios/axiosApi';
+import { colors } from '../utils/color';
 
 const AddressPaymentDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const addressReducerData = useSelector((state) => state.AddressR);
   const CartReducerData = useSelector((state) => state.CartR);
-  console.log(CartReducerData.totalPrice);
-  // const { id } = route.params;
+  const [showIndicator, setShowIndicator] = useState(true)
+  const AuthReducerData = useSelector((state) => state.AuthR);
+  const { id, price } = route.params;
+  console.log(price);
+  const orderAmount = price;
+  const deliveryAmount = 10;
+  const discount = (orderAmount * 20) / 100;
+  const totalPay = parseInt(orderAmount) + parseInt(deliveryAmount - discount);
+  const emailId = AuthReducerData.userEmail;
+
+
+  const payButtonHandler = async () => {
+    setShowIndicator(false);
+    const dataObj = {
+      "billing": {
+        "first_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.firstName : addressReducerData.addressData.BillingfirstName,
+        "last_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.lastName : addressReducerData.addressData.BillinglastName,
+        "company": "",
+        "address_1": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne,
+        "address_2": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressTwo : addressReducerData.addressData.BillingaddressTwo,
+        "city": addressReducerData.sameAddress == true ? addressReducerData.addressData.city : addressReducerData.addressData.Billingcity,
+        "state": addressReducerData.sameAddress == true ? addressReducerData.addressData.state : addressReducerData.addressData.Billingstate,
+        "postcode": addressReducerData.sameAddress == true ? addressReducerData.addressData.pinCode : addressReducerData.addressData.BillingpinCode,
+        "country": addressReducerData.sameAddress == true ? addressReducerData.addressData.country : addressReducerData.addressData.Billingcountry,
+        "email": emailId,
+        "phone": addressReducerData.sameAddress == true ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo,
+      },
+      "shipping": {
+        "first_name": "janak",
+        "last_name": addressReducerData.addressData.lastName,
+        "company": "",
+        "address_1": addressReducerData.addressData.addressOne,
+        "address_2": addressReducerData.addressData.addressTwo,
+        "city": addressReducerData.addressData.city,
+        "state": addressReducerData.addressData.state,
+        "postcode": addressReducerData.addressData.pinCode,
+        "country": addressReducerData.addressData.country,
+        "phone": addressReducerData.addressData.mobileNo,
+      },
+      // discount_total: discount,
+      // shipping_total: deliveryAmount,
+      // total: totalPay,
+
+    }
+    const res = await putData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`, dataObj)
+    console.log(res);
+    navigation.navigate('Payment')
+    setShowIndicator(true);
+
+  }
+
   return (
     <View
       style={styles.container}>
-      <ScrollView>
+      {
+        showIndicator == false ? <ActivityIndicator size={50}
+          style={{ position: 'absolute', alignItems: 'center', top: '50%', left: '45%', justifyContent: 'center', zIndex: 1 }} /> : ''
+      }
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* shipping code */}
         <View style={styles.shipping_container} >
           <Text style={styles.shipping_text_style}>Shipping information </Text>
+          <View style={styles.shipping_inner_box}>
 
-          <View style={styles.text_icon_container}>
-            <Ionicons name='person-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text
-              style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
-              {addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName}</Text>
+            <View style={styles.text_icon_container}>
+              <Ionicons name='person-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text
+                style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
+                {addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName}</Text>
+            </View>
+
+            <View style={styles.text_icon_container}>
+              <Ionicons name='location-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >{addressReducerData.addressData.addressOne} </Text>
+            </View>
+            <View style={styles.text_icon_container}>
+              <Ionicons name='call-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} > {addressReducerData.addressData.mobileNo}</Text>
+            </View>
           </View>
 
-          <View style={styles.text_icon_container}>
-            <Ionicons name='location-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >{addressReducerData.addressData.addressOne} </Text>
-          </View>
-          <View style={styles.text_icon_container}>
-            <Ionicons name='call-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} > {addressReducerData.addressData.mobileNo}</Text>
-          </View>
           <TouchableOpacity style={styles.change_btn}
             onPress={() => navigation.navigate('EditAddress')}
           >
@@ -48,22 +106,23 @@ const AddressPaymentDetails = () => {
         {/* Billing code */}
         <View style={styles.shipping_container} >
           <Text style={styles.shipping_text_style}>Billing information </Text>
+          <View style={styles.shipping_inner_box}>
+            <View style={styles.text_icon_container}>
+              <Ionicons name='person-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
+                {addressReducerData.sameAddress ? addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName : addressReducerData.addressData.BillingfirstName + ' ' + addressReducerData.addressData.BillinglastName}</Text>
+            </View>
 
-          <View style={styles.text_icon_container}>
-            <Ionicons name='person-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 17, textTransform: 'capitalize' }]} >
-              {addressReducerData.sameAddress ? addressReducerData.addressData.firstName + ' ' + addressReducerData.addressData.lastName : addressReducerData.addressData.BillingfirstName + ' ' + addressReducerData.addressData.BillinglastName}</Text>
-          </View>
-
-          <View style={styles.text_icon_container}>
-            <Ionicons name='location-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >
-              {addressReducerData.sameAddress ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne} </Text>
-          </View>
-          <View style={styles.text_icon_container}>
-            <Ionicons name='call-outline' size={24} style={{ marginHorizontal: 10, flex: 1, }} />
-            <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} >
-              {addressReducerData.sameAddress ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo} </Text>
+            <View style={styles.text_icon_container}>
+              <Ionicons name='location-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text style={[styles.shipping_box_text_style, { fontSize: 15, textTransform: 'capitalize' }]} >
+                {addressReducerData.sameAddress ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne} </Text>
+            </View>
+            <View style={styles.text_icon_container}>
+              <Ionicons name='call-outline' size={24} color={colors._theme_primary_color} style={{ marginHorizontal: 10, flex: 1, }} />
+              <Text style={[styles.shipping_box_text_style, { fontSize: 15 }]} >
+                {addressReducerData.sameAddress ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo} </Text>
+            </View>
           </View>
         </View>
 
@@ -71,12 +130,14 @@ const AddressPaymentDetails = () => {
           <Text style={styles.txt_style}>Promo Code</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
             <TextInput
-              fontSize={20}
-              style={{ flex: 1, backgroundColor: '#f2f2f2', paddingHorizontal: 10, borderRadius: 5, marginRight: 10, borderWidth: 0.2, height: 40 }}
+              fontSize={15}
+              placeholder={"Enter Promo Code"}
+              placeholderTextColor={'#777'}
+              style={{ flex: 1, backgroundColor: '#f2f2f2', paddingHorizontal: 10, borderRadius: 5, borderColor: colors._theme_primary_color, marginRight: 10, borderWidth: 0.3, height: 40, color: '#000', }}
             />
             <Animatable.View animation='zoomInLeft'>
               <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
-                <Text style={[styles.txt_style, { color: '#5956E9' }]}>Apply</Text>
+                <Text style={[styles.txt_style, { color: colors._theme_primary_color }]}>Apply</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
@@ -87,12 +148,12 @@ const AddressPaymentDetails = () => {
             <View style={styles.order_inner_first_container}>
               <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Order Amount</Text>
               <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Delivery Fees</Text>
-              <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Discount</Text>
+              <Text style={[styles.order_txt_style, { marginTop: 10, fontWeight: "700", color: "#44A037" }]} >Discount</Text>
             </View>
             <View style={styles.ordert_inner_second_container}>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{CartReducerData.totalPrice}.00</Text>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >100.00</Text>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >-2000.00</Text>
+              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{orderAmount}</Text>
+              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{deliveryAmount}.00</Text>
+              <Text style={[styles.order_txt_style, { color: "#44A037", marginTop: 10 }]} >-{discount}.00</Text>
             </View>
           </View>
           {/* // horizontal line */}
@@ -108,7 +169,7 @@ const AddressPaymentDetails = () => {
               <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Total Pay</Text>
             </View>
             <View style={styles.ordert_inner_second_container}>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >2900.00</Text>
+              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{totalPay}.00</Text>
             </View>
           </View>
 
@@ -117,8 +178,8 @@ const AddressPaymentDetails = () => {
           <Animatable.View
             animation="slideInLeft"
             style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-            <TouchableOpacity style={{ flex: 1.3, justifyContent: 'center', alignItems: 'center', borderRadius: 10, width: '100%', height: 50, backgroundColor: '#5956E9' }}
-              onPress={() => navigation.navigate('Payment')}
+            <TouchableOpacity style={{ flex: 1.3, justifyContent: 'center', alignItems: 'center', borderRadius: 10, width: '100%', height: 50, backgroundColor: colors._theme_primary_color }}
+              onPress={() => payButtonHandler()}
             >
               <Animatable.Text
                 animation="flash"
@@ -139,33 +200,19 @@ export default AddressPaymentDetails
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#AAD9DF',efe3de
-    //backgroundColor: '#efe3de',
+    backgroundColor: colors._bg_color,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
   top_container: {
-
-    //backgroundColor: '#f0f',
-    // borderRadius: 5,
-    // paddingHorizontal: 10,
-    paddingVertical: 20,
-    // paddingTop: 20
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.23,
-    // shadowRadius: 2.62,
-
-    // elevation: 4,
-
+    paddingVertical: 10,
   },
   txt_style: {
-    fontSize: 18,
+    fontSize: 17,
     color: '#000',
-    fontFamily: 'Raleway'
+    fontFamily: 'Raleway',
+    fontWeight: Platform === 'ios' ? '600' : 'bold',
+
   },
   order_top_container: {
     flexDirection: 'row',
@@ -186,22 +233,22 @@ const styles = StyleSheet.create({
 
   },
   shipping_container: {
-    height: 170,
-    width: '95%',
+    height: 200,
+    width: '100%',
     marginVertical: 10
 
   },
   shipping_text_style: {
     fontSize: 17,
     fontFamily: 'Raleway',
-    fontWeight: '600',
+    fontWeight: Platform === 'ios' ? '600' : 'bold',
     lineHeight: 17,
-    marginBottom: 30,
+    marginBottom: 20,
     color: '#000'
   },
   text_icon_container: {
     flexDirection: 'row',
-    marginLeft: 10,
+    marginLeft: 0,
     height: 40,
     // borderWidth: 1,
     alignItems: 'center',
@@ -218,11 +265,16 @@ const styles = StyleSheet.create({
     right: 0,
   },
   change_btn_text: {
-    fontSize: 15,
-    color: '#5956E9',
+    fontSize: 17,
+    color: colors._theme_primary_color,
     fontFamily: 'Raleway',
-    fontWeight: '600'
-
+    fontWeight: Platform === 'ios' ? '600' : 'bold',
+  },
+  shipping_inner_box: {
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    paddingVertical: 20,
+    width: '100%'
   }
 
 

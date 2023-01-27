@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RestoreToken, isLoadingSet } from '../Redux/Action/AuthAction/AuthAction';
+import { RestoreToken, isLoadingSet, setEmailId } from '../Redux/Action/AuthAction/AuthAction';
 import { decrement, increment, addArrayElemets, deleteArrayElemets } from '../Redux/Action/CartAction/CartAction';
 import fetchDataProduct, { getData } from '../api/axios/axiosApi';
 
@@ -44,7 +44,10 @@ const SplashScreen = () => {
         try {
             const value = await AsyncStorage.getItem('userToken')
             console.log(value + ' <= token');
+            const email = await AsyncStorage.getItem('userEmail')
+            // console.log(email);
             dispatch(RestoreToken(value))
+            dispatch(setEmailId(email))
             if (value !== null) {
                 getCardData();
             }

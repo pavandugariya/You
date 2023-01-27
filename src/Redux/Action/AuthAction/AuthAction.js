@@ -12,3 +12,9 @@ export const isLoadingSet = (value) => {
         payload: value,
     };
 };
+export const setEmailId = (value) => {
+    return {
+        type: 'SET_EMAIL',
+        payload: value,
+    };
+};

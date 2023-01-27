@@ -12,10 +12,11 @@ const Drawer = createDrawerNavigator();
 const DrawerNavigation = () => {
     return (
         <Drawer.Navigator
-            drawerContent={() => <CustomDraweContent
-                iconColor={'#fff'}
-                iconSize={24}
-            />}
+            drawerContent={() =>
+                <CustomDraweContent
+                    iconColor={'#fff'}
+                    iconSize={24}
+                />}
         // drawerContent={props => <DrawerContent {...props} /> }
 
         >
