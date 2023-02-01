@@ -22,6 +22,9 @@ import { useSelector, useDispatch, batch } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons'
 import OrderDetails from '../screens/OrderDetails';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import NetDisconnect from '../components/NetConnection/NetDisconnect';
+import HelpPage from '../screens/HelpPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +34,7 @@ const StackNavigator = () => {
     const badgesCount = ReducerCardData.cartarray.length;
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const net = useNetInfo();
 
 
     return (
@@ -46,6 +50,8 @@ const StackNavigator = () => {
                             <Stack.Screen name="SignUp" component={RegistrationScreen} options={{ headerShown: false }} />
                             <Stack.Screen name="ResetPassword" component={ForgotPassword} options={{ headerShown: false }} />
                         </>
+                    ) : !net.isConnected ? (
+                        <Stack.Screen name="Net Disconnect" component={NetDisconnect} options={{ headerShown: false }} />
                     ) : (
                         <>
                             <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }} />
@@ -118,6 +124,7 @@ const StackNavigator = () => {
                             />
                             <Stack.Screen name="Payment" component={Payment} />
                             <Stack.Screen name="Thanks" component={Thanks} options={{ headerShown: false }} />
+                            <Stack.Screen name="Help" component={HelpPage} options={{ headerShown: false }} />
                         </>
 
                     )

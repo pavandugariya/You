@@ -13,9 +13,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {!net.isConnected ? <NetDisconnect /> :
-          <StackNavigator />
-        }
+        <StackNavigator />
       </NavigationContainer>
     </Provider>
   );

@@ -73,7 +73,20 @@ const EditAddress = () => {
                     {/* <CustomDropdown /> */}
                     <View style={{
                         flexDirection: 'row',
-                        marginHorizontal: 30,
+                        marginHorizontal: 20,
+                        backgroundColor: '#fff',
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        borderRadius: 10,
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 1,
+                        },
+                        shadowOpacity: 0.22,
+                        shadowRadius: 2.22,
+
+                        elevation: 2,
 
                     }}>
                         <View
@@ -241,7 +254,20 @@ const EditAddress = () => {
                             <Text style={styles.shipping_detail_txt}>Billing Details</Text>
                             <View style={{
                                 flexDirection: 'row',
-                                marginHorizontal: 30
+                                marginHorizontal: 20,
+                                backgroundColor: '#fff',
+                                paddingHorizontal: 20,
+                                paddingVertical: 10,
+                                borderRadius: 10,
+                                shadowColor: "#000",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 1,
+                                },
+                                shadowOpacity: 0.22,
+                                shadowRadius: 2.22,
+
+                                elevation: 3,
                             }}>
                                 <View style={{
                                     height: 80,
@@ -428,9 +454,21 @@ const styles = StyleSheet.create({
         top: 50,
     },
     text_input: {
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         marginVertical: 10,
+        backgroundColor: '#fff',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
 
+        elevation: 2,
     },
     txt_style: {
         fontSize: 16,

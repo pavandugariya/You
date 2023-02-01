@@ -7,8 +7,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import { useSelector } from 'react-redux';
-import { putData } from '../api/axios/axiosApi';
+import { getData, putData } from '../api/axios/axiosApi';
 import { colors } from '../utils/color';
+import RazorpayCheckout from 'react-native-razorpay';
 
 const AddressPaymentDetails = () => {
   const navigation = useNavigation();
@@ -18,54 +19,119 @@ const AddressPaymentDetails = () => {
   const [showIndicator, setShowIndicator] = useState(true)
   const AuthReducerData = useSelector((state) => state.AuthR);
   const { id, price } = route.params;
-  console.log(price);
+  console.log(price, id);
   const orderAmount = price;
   const deliveryAmount = 10;
-  const discount = (orderAmount * 20) / 100;
-  const totalPay = parseInt(orderAmount) + parseInt(deliveryAmount - discount);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const discount = (orderAmount * discountPercentage) / 100;
+  const totalPay = parseFloat(orderAmount) + parseFloat(deliveryAmount - discount);
   const emailId = AuthReducerData.userEmail;
+  const [promoCode, setpromoCode] = useState('')
 
 
+  // payButton handler
   const payButtonHandler = async () => {
     setShowIndicator(false);
-    const dataObj = {
-      "billing": {
-        "first_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.firstName : addressReducerData.addressData.BillingfirstName,
-        "last_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.lastName : addressReducerData.addressData.BillinglastName,
-        "company": "",
-        "address_1": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne,
-        "address_2": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressTwo : addressReducerData.addressData.BillingaddressTwo,
-        "city": addressReducerData.sameAddress == true ? addressReducerData.addressData.city : addressReducerData.addressData.Billingcity,
-        "state": addressReducerData.sameAddress == true ? addressReducerData.addressData.state : addressReducerData.addressData.Billingstate,
-        "postcode": addressReducerData.sameAddress == true ? addressReducerData.addressData.pinCode : addressReducerData.addressData.BillingpinCode,
-        "country": addressReducerData.sameAddress == true ? addressReducerData.addressData.country : addressReducerData.addressData.Billingcountry,
-        "email": emailId,
-        "phone": addressReducerData.sameAddress == true ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo,
-      },
-      "shipping": {
-        "first_name": "janak",
-        "last_name": addressReducerData.addressData.lastName,
-        "company": "",
-        "address_1": addressReducerData.addressData.addressOne,
-        "address_2": addressReducerData.addressData.addressTwo,
-        "city": addressReducerData.addressData.city,
-        "state": addressReducerData.addressData.state,
-        "postcode": addressReducerData.addressData.pinCode,
-        "country": addressReducerData.addressData.country,
-        "phone": addressReducerData.addressData.mobileNo,
-      },
-      // discount_total: discount,
-      // shipping_total: deliveryAmount,
-      // total: totalPay,
 
+    // rozerpay
+    var options = {
+      description: 'Credits towards consultation',
+      image: 'https://i.imgur.com/3g7nmJC.jpg',
+      currency: 'INR',
+      key: 'rzp_test_fmFnvOTQNBdsKa',
+      amount: totalPay * 100,
+      name: 'Car Product',
+      order_id: '',//Replace this with an order_id created using Orders API.
+      prefill: {
+        email: 'gaurav.kumar@example.com',
+        contact: '9191919191',
+        name: 'Gaurav Kumar'
+      },
+      theme: { color: colors._theme_primary_color }
     }
-    const res = await putData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`, dataObj)
-    console.log(res);
-    navigation.navigate('Payment')
+    RazorpayCheckout.open(options).then(async (data) => {
+      // handle success
+      alert(`Success: ${data.razorpay_payment_id}`);
+      const dataObj = {
+        "billing": {
+          "first_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.firstName : addressReducerData.addressData.BillingfirstName,
+          "last_name": addressReducerData.sameAddress == true ? addressReducerData.addressData.lastName : addressReducerData.addressData.BillinglastName,
+          "company": "",
+          "address_1": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressOne : addressReducerData.addressData.BillingaddressOne,
+          "address_2": addressReducerData.sameAddress == true ? addressReducerData.addressData.addressTwo : addressReducerData.addressData.BillingaddressTwo,
+          "city": addressReducerData.sameAddress == true ? addressReducerData.addressData.city : addressReducerData.addressData.Billingcity,
+          "state": addressReducerData.sameAddress == true ? addressReducerData.addressData.state : addressReducerData.addressData.Billingstate,
+          "postcode": addressReducerData.sameAddress == true ? addressReducerData.addressData.pinCode : addressReducerData.addressData.BillingpinCode,
+          "country": addressReducerData.sameAddress == true ? addressReducerData.addressData.country : addressReducerData.addressData.Billingcountry,
+          "email": emailId,
+          "phone": addressReducerData.sameAddress == true ? addressReducerData.addressData.mobileNo : addressReducerData.addressData.BillingmobileNo,
+        },
+        "shipping": {
+          "first_name": "janak",
+          "last_name": addressReducerData.addressData.lastName,
+          "company": "",
+          "address_1": addressReducerData.addressData.addressOne,
+          "address_2": addressReducerData.addressData.addressTwo,
+          "city": addressReducerData.addressData.city,
+          "state": addressReducerData.addressData.state,
+          "postcode": addressReducerData.addressData.pinCode,
+          "country": addressReducerData.addressData.country,
+          "phone": addressReducerData.addressData.mobileNo,
+        },
+        "transaction_id": data.razorpay_payment_id,
+        "status": "completed",
+      }
+      const res = await putData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`, dataObj)
+      navigation.navigate('Thanks', { id: id })
+
+    }).catch((error) => {
+      // handle failure
+      console.log(error);
+      alert(`Error: ${error.code} | ${error.description}`);
+    });
+    // navigation.navigate('Payment')    
     setShowIndicator(true);
 
   }
+  // promo code apply
+  const promoCodeHandler = async () => {
+    try {
+      if (price < 100) {
+        alert('Apply coupon codes for total order value is greater than 100 INR')
+      } else {
 
+        if (promoCode.length > 0) {
+          try {
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/coupons?code=${promoCode}`)
+            // console.log(res[0].code);
+            if (res.length > 0) {
+              setDiscountPercentage(5);
+              if (res[0].code == promoCode.toLocaleLowerCase()) {
+                const dataObj = {
+                  "coupon_lines": [
+                    { "code": promoCode }
+                  ],
+                }
+                const res = await putData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`, dataObj)
+                console.log(res);
+                alert('promo code applyed')
+              }
+            } else {
+              alert("promo code does't exist");
+            }
+
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          alert('Please Fill Correct Code')
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
   return (
     <View
       style={styles.container}>
@@ -126,6 +192,7 @@ const AddressPaymentDetails = () => {
           </View>
         </View>
 
+        {/* //Promo Code */}
         <View style={styles.top_container}>
           <Text style={styles.txt_style}>Promo Code</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
@@ -133,10 +200,15 @@ const AddressPaymentDetails = () => {
               fontSize={15}
               placeholder={"Enter Promo Code"}
               placeholderTextColor={'#777'}
+              value={promoCode}
+              onChangeText={(val) => setpromoCode(val)}
               style={{ flex: 1, backgroundColor: '#f2f2f2', paddingHorizontal: 10, borderRadius: 5, borderColor: colors._theme_primary_color, marginRight: 10, borderWidth: 0.3, height: 40, color: '#000', }}
             />
             <Animatable.View animation='zoomInLeft'>
-              <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', }}>
+              <TouchableOpacity
+                style={{ justifyContent: 'center', alignItems: 'center', paddingLeft: 20 }}
+                onPress={promoCodeHandler}
+              >
                 <Text style={[styles.txt_style, { color: colors._theme_primary_color }]}>Apply</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -153,7 +225,7 @@ const AddressPaymentDetails = () => {
             <View style={styles.ordert_inner_second_container}>
               <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{orderAmount}</Text>
               <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{deliveryAmount}.00</Text>
-              <Text style={[styles.order_txt_style, { color: "#44A037", marginTop: 10 }]} >-{discount}.00</Text>
+              <Text style={[styles.order_txt_style, { color: "#44A037", marginTop: 10 }]} >-{discount}</Text>
             </View>
           </View>
           {/* // horizontal line */}
@@ -169,7 +241,7 @@ const AddressPaymentDetails = () => {
               <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Total Pay</Text>
             </View>
             <View style={styles.ordert_inner_second_container}>
-              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{totalPay}.00</Text>
+              <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{totalPay.toFixed(2)}</Text>
             </View>
           </View>
 

@@ -340,7 +340,7 @@ const Category = () => {
                             return (
                                 // slug == item.categories[0].id ?
                                 <Animatable.View key={index}
-                                    // animation={'fadeInRightBig'}
+                                    animation={'zoomIn'}
                                     style={styles.box_inner_container}
                                     onPress={() => { navigation.navigate('Category') }}>
                                     <TouchableOpacity
@@ -352,7 +352,7 @@ const Category = () => {
 
                                             <Image
                                                 source={{ uri: item.images ? item.images[0].src : 'https://cdn-icons-png.flaticon.com/512/9184/9184014.png' }}
-                                                style={{ height: undefined, width: '100%', alignSelf: 'center', aspectRatio: 1, borderRadius: 10, }}
+                                                style={{ height: undefined, width: '100%', alignSelf: 'center', aspectRatio: 1, }}
                                             // resizeMode="center"
                                             // resizeMethod='auto'
                                             />

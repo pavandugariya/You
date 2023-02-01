@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, ScrollView, TouchableOpacity, ToastAndroid, ActivityIndicator, ImageBackground } from 'react-native'
+import { StyleSheet, Image, Text, View, ScrollView, TouchableOpacity, ToastAndroid, ActivityIndicator, ImageBackground, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { DataTable } from 'react-native-paper'
 import ButtonField from '../components/ButtonField';
@@ -14,6 +14,9 @@ import { getData, postData, postDataSecond } from '../api/axios/axiosApi';
 import Icon from 'react-native-vector-icons/Ionicons'
 import Iconss from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/color';
+import * as Animatable from 'react-native-animatable';
+
+
 const imageUri = [
     'https://m.media-amazon.com/images/I/61HWZntOkzL._SY450_.jpg',
     'https://5.imimg.com/data5/RH/QC/MY-4362497/product-upload-services-500x500.jpg',
@@ -27,7 +30,7 @@ const ProductDetail = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const { id, quantity } = props.route.params;
-    const { width } = useWindowDimensions();
+    const { width, height } = useWindowDimensions();
     const [showIndicator, setShowIndicator] = useState(true)
     var isadd = false;
     const ReducerCardData = useSelector((state) => state.CartR);
@@ -37,7 +40,7 @@ const ProductDetail = (props) => {
     const [readMore, setreadMore] = useState(true)
     const [showtext, setShowtext] = useState(400)
     const [like, setlike] = useState(false)
-
+    const [currentIndex, setcurrentIndex] = useState(0)
 
 
     const addToCardHandler = async (item) => {
@@ -125,30 +128,40 @@ const ProductDetail = (props) => {
                                 <ScrollView
                                     pagingEnabled
                                     horizontal={true}
-                                // showsHorizontalScrollIndicator={false}
+                                    showsHorizontalScrollIndicator={false}
+                                    onScroll={e => {
+                                        const x = e.nativeEvent.contentOffset.x;
+                                        setcurrentIndex((x / width).toFixed(0));
+                                    }}
                                 >
                                     {
                                         items.images && items.images.map((item, index) => {
                                             return (
-                                                <View key={index} style={{ width: 320, height: '100%', margin: 20 }}>
-                                                    <ImageBackground
-                                                        resizeMode='stretch'
-                                                        style={{ height: '100%', width: '100%', borderRadius: 10, overflow: 'hidden' }}
-                                                        source={require('../../assets/images/bg14.png')}>
-
-                                                        <Pinchable >
-                                                            <Image
-                                                                source={{ uri: item.src }}
-                                                                style={{ height: '100%', width: '100%', borderRadius: 5, }}
-                                                                resizeMode='stretch'
-                                                            />
-                                                        </Pinchable>
-                                                    </ImageBackground>
+                                                <View key={index} style={{
+                                                    width: 330, height: '88%', margin: 20,
+                                                    alignSelf: 'center', alignItems: 'center',
+                                                    // justifyContent: 'center'
+                                                }}>
+                                                    <Pinchable >
+                                                        <Image
+                                                            source={{ uri: item.src }}
+                                                            style={{ height: '100%', width: '100%', aspectRatio: 1, }}
+                                                            resizeMode='contain'
+                                                        />
+                                                    </Pinchable>
                                                 </View>
                                             )
                                         })
                                     }
                                 </ScrollView>
+                                <View style={{ flexDirection: 'row', margin: 5, position: 'absolute', bottom: 5, alignItems: 'center' }}>
+                                    {items.images && items.images.map((item, index) => {
+                                        return (
+                                            <View key={index} style={{ height: currentIndex == index ? 11 : 8, width: currentIndex == index ? 11 : 8, borderRadius: 8, backgroundColor: currentIndex == index ? colors._theme_primary_color : "#777", margin: 5 }}></View>
+                                        )
+                                    })
+                                    }
+                                </View>
                                 <TouchableOpacity
                                     onPress={() => { setlike(!like) }}
                                     style={{ position: 'absolute', top: 13, right: 15 }}>
@@ -157,7 +170,9 @@ const ProductDetail = (props) => {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View style={styles.details_top_container}>
+                            <Animatable.View style={styles.details_top_container}
+                                animation={'slideInUp'}
+                            >
                                 <View style={styles.col_style}>
                                     <Text style={styles.name_col2_style}>{items.name}</Text>
                                 </View>
@@ -250,7 +265,7 @@ const ProductDetail = (props) => {
                                     </View>
                                 }
 
-                            </View>
+                            </Animatable.View>
                         </ScrollView>
                         <View style={{
                             flexDirection: 'row',
@@ -318,11 +333,13 @@ const styles = StyleSheet.create({
     },
     img_container: {
         height: 350,
-        width: '98%',
+        width: '100%',
         paddingVertical: 20,
-        paddingHorizontal: 20,
+        // paddingRight: 5,
+        paddingLeft: 15,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignSelf: 'center'
     },
     details_top_container: {
         // marginHorizontal: 10,

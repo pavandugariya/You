@@ -48,7 +48,7 @@ const CustomDraweContent = ({ iconColor, iconSize }) => {
                             onPress={() => { navigation.navigate('Profile') }}
                         />
                         <DrawerItem
-                            icon={() => <Icones name={'shopping-bag'} size={iconSize} color={iconColor} />}
+                            icon={() => <Icones name={'local-mall'} size={iconSize} color={iconColor} />}
                             label={'My Orders'}
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
                             onPress={() => { navigation.navigate('Order History') }}
@@ -66,10 +66,10 @@ const CustomDraweContent = ({ iconColor, iconSize }) => {
                             onPress={() => { navigation.navigate('Home') }}
                         /> */}
                         <DrawerItem
-                            icon={() => <Icones name={'contact-support'} size={iconSize} color={iconColor} />}
+                            icon={() => <Icone name={'help-circle-outline'} size={iconSize} color={iconColor} />}
                             label={'Help'}
                             labelStyle={{ color: iconColor, fontSize: 17, fontFamily: 'Raleway', fontWeight: '600', }}
-                            onPress={() => { navigation.navigate('Home') }}
+                            onPress={() => { navigation.navigate('Help') }}
                         />
                     </Drawer.Section>
                 </View>

@@ -28,7 +28,7 @@ const Cart = () => {
     const [dumyCount, setdumyCount] = useState(true)
     const [stackData, setstackData] = useState()
     const isFocused = useIsFocused();
-    const totalCardPrice = reducerData.totalPrice / 100;
+    const totalCardPrice = parseFloat(reducerData.totalPrice / 100).toFixed(2);
     useEffect(() => {
         getStack()
         if (reducerData.cartarray.length > 0) {
@@ -131,8 +131,9 @@ const Cart = () => {
             try {
                 const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, dataObj);
                 const id = res.id;
-                const price = res.total;
-                console.log(res.total);
+                const price = totalCardPrice
+
+                console.log(totalCardPrice, id);
                 id && navigation.navigate('AddressPaymentDetails', { id: id, price: price })
 
             } catch (error) {

@@ -1,19 +1,33 @@
-import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 import * as Animatable from 'react-native-animatable';
 import Share from 'react-native-share';
 import ViewShot from "react-native-view-shot";
+import { getData } from '../api/axios/axiosApi';
+import { colors } from '../utils/color';
 
-const Thanks = () => {
+const Thanks = (props) => {
+    console.log(props.route.params.id);
+    const id = props.route.params.id;
     const navigation = useNavigation();
     const ref = useRef();
-    const [image, setimage] = useState()
+    const [image, setimage] = useState();
+    const [orderData, setorderData] = useState({})
+    const [showIndicator, setShowIndicator] = useState(true)
+    const [discountPercentage, setDiscountPercentage] = useState(0);
+
+    const orderAmount = parseFloat(orderData.total) + parseFloat(orderData.discount_total);
+    const deliveryFee = 10;
+    const discount = (orderAmount * discountPercentage) / 100;
+    const totalPay = (orderAmount) + (deliveryFee - discount);
+
     useEffect(() => {
+        getOrderData()
         setTimeout(() => {
             try {
-
                 ref.current.capture().then(uri => {
                     // console.log("do something with ", uri);
                     setimage(uri)
@@ -21,10 +35,21 @@ const Thanks = () => {
             } catch (error) {
                 console.log(error);
             }
-        }, 2000);
+        }, 3000);
 
     }, [])
-
+    const getOrderData = async () => {
+        try {
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`)
+            setorderData(res)
+            if (res.discount_total > 0) {
+                setDiscountPercentage(5);
+            }
+            setShowIndicator(false)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const myCustomShare = async () => {
         const shareOption = {
@@ -41,51 +66,52 @@ const Thanks = () => {
     }
     return (
         <View style={styles.container}>
+
             <ViewShot
                 ref={ref}
                 options={{ fileName: "Your Order receipt", format: "jpg", quality: 0.9 }}
-                style={{ backgroundColor: '#F5F5F8' }}
+                style={{ backgroundColor: '#F5F5F8', width: '100%', height: '84%' }}
             >
                 <Animatable.View
                     animation={'slideInUp'}
                     style={styles.top_container}>
-                    <Icon name='verified' size={100} color={'green'} />
+                    <Icons name='verified' size={100} color={'green'} />
                     <Text style={{ fontSize: 25, color: '#000' }}>Your Order is Complete!</Text>
                 </Animatable.View>
+                <Text style={styles.txt_style}>Shipping address</Text>
                 <View style={styles.shipping_box}>
-                    <Text style={styles.txt_style}>Shipping address</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Icon name='location-on' size={25} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}> Village Devas nagar indore bypass khujner </Text>
+                        <Icon name='location-outline' size={24} color={'#5956E9'} />
+                        <Text style={styles.txt_style2}> {orderData.billing && orderData.shipping.address_1} </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Icon name='call' size={25} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}>+91 8224855467 </Text>
+                        <Icon name='call-outline' size={24} color={'#5956E9'} />
+                        <Text style={styles.txt_style2}>+91  {orderData.billing && orderData.shipping.phone}</Text>
                     </View>
                 </View>
+                <Text style={styles.txt_style}>Billing address</Text>
                 <View style={styles.shipping_box}>
-                    <Text style={styles.txt_style}>Billing address</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Icon name='location-on' size={25} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}> Village Devas nagar indore bypass khujner </Text>
+                        <Icon name='location-outline' size={24} color={'#5956E9'} />
+                        <Text style={styles.txt_style2}>  {orderData.billing && orderData.billing.address_1} </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Icon name='call' size={25} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}>+91 8224855467 </Text>
+                        <Icon name='call-outline' size={24} color={'#5956E9'} />
+                        <Text style={styles.txt_style2}>+91  {orderData.billing && orderData.billing.phone}</Text>
                     </View>
                 </View>
                 {/* Order Summary */}
-                <Text style={[styles.txt_style, { marginHorizontal: 40, marginTop: 10, marginBottom: 0 }]}>Order Summary</Text>
+                <Text style={[styles.txt_style, { marginTop: 10, marginBottom: 0 }]}>Order Summary</Text>
                 <View style={styles.order_top_container} >
                     <View style={styles.order_inner_first_container}>
                         <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Order Amount</Text>
                         <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Delivery Fees</Text>
-                        <Text style={[styles.order_txt_style, { marginTop: 10 }]} >Discount</Text>
+                        <Text style={[styles.order_txt_style, { marginTop: 10, color: 'green' }]} >Discount</Text>
                     </View>
                     <View style={styles.ordert_inner_second_container}>
-                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >5000</Text>
-                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >100</Text>
-                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >-2000</Text>
+                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{orderAmount}.00</Text>
+                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 10 }]} >{deliveryFee}.00</Text>
+                        <Text style={[styles.order_txt_style, { color: 'green', marginTop: 10 }]} >- {discount}</Text>
                     </View>
                 </View>
                 {/* // horizontal line */}
@@ -93,7 +119,6 @@ const Thanks = () => {
                     style={{
                         borderBottomColor: 'black',
                         borderBottomWidth: StyleSheet.hairlineWidth,
-                        marginHorizontal: 40,
                         marginTop: 5,
                     }}
                 />
@@ -102,14 +127,14 @@ const Thanks = () => {
                         <Text style={[styles.order_txt_style, { marginTop: 4 }]} >You have Paid</Text>
                     </View>
                     <View style={styles.ordert_inner_second_container}>
-                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 4 }]} >2900</Text>
+                        <Text style={[styles.order_txt_style, { color: '#000', marginTop: 4 }]} >{totalPay}</Text>
                     </View>
                 </View>
 
                 <TouchableOpacity style={styles.share_btn}
                     onPress={() => myCustomShare()}
                 >
-                    <Icon name='share' size={30} color={'green'} />
+                    <Icon name='share-social-outline' size={30} color={'green'} />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.continue_shopping_btn}
@@ -127,7 +152,10 @@ export default Thanks
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F8',
+        backgroundColor: colors._bg_color,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+
     },
     top_container: {
         backgroundColor: '#F5F5F8',
@@ -135,17 +163,20 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
         alignItems: 'center',
-        top: 30
+        top: 10,
     },
     shipping_box: {
-        marginHorizontal: 50,
-        // backgroundColor: '#F5F5F8'
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        paddingHorizontal: 10,
     },
     txt_style: {
-        fontSize: 20,
+        fontSize: 17,
         fontFamily: 'Raleway',
         color: '#000',
-        marginVertical: 20
+        marginVertical: 5,
+        fontWeight: 'bold'
     },
     txt_style2: {
         fontSize: 16,
@@ -157,7 +188,7 @@ const styles = StyleSheet.create({
     order_top_container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 40,
+        paddingHorizontal: 10,
     },
     order_inner_first_container: {
         margin: 5
@@ -168,14 +199,14 @@ const styles = StyleSheet.create({
 
     },
     order_txt_style: {
-        fontSize: 15,
+        fontSize: 18,
         color: '#000',
         fontFamily: 'Raleway'
     },
     share_btn: {
         position: 'absolute',
         right: 50,
-        bottom: -90
+        bottom: -80
     },
     continue_shopping_btn: {
         height: 50,
@@ -185,7 +216,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
-        bottom: -100,
+        bottom: -90,
         right: 100
     }
 

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { colors } from '../utils/color';
@@ -7,6 +7,23 @@ import { colors } from '../utils/color';
 const OrderDetails = () => {
     const route = useRoute();
     const { item } = route.params;
+    const [steps, setSteps] = useState(0)
+    const progress1 = useRef(new Animated.Value(0)).current;
+    const start1 = () => {
+        Animated.timing(progress1, {
+            toValue: 60,
+            duration: 2000,
+            useNativeDriver: false,
+        }).start();
+    };
+    useEffect(() => {
+        setTimeout(() => {
+            setSteps(1)
+            start1();
+
+        }, 3000);
+    })
+
     return (
         <View style={styles.container}>
             <View style={styles.top_container}>
@@ -28,17 +45,25 @@ const OrderDetails = () => {
                 {/* //order Confirmed view */}
                 <View style={{ flexDirection: 'row', }}>
                     <View style={styles.order_confirmed_first_container}>
-                        <View style={[styles.circle_style, { backgroundColor: 'green', borderColor: 'green' }]}></View>
-                        <Icon name='checkmark-outline' size={15} color={'#fff'} style={{ top: 0, fontWeight: 'bold', position: 'absolute' }} />
+                        <View style={[styles.circle_style, { backgroundColor: 'green', borderColor: 'green' }]}>
+                            <Icon name='checkmark-outline' size={15} color={'#fff'} style={{ top: 0, fontWeight: 'bold', position: 'absolute' }} />
+                        </View>
 
-                        <View style={[styles.line_style, { borderColor: 'green', }]}></View>
-                        <View style={[styles.circle_style, { backgroundColor: item.status1 == 'Arriving' ? '#fff' : 'green', borderColor: 'green' }]}></View>
-                        <Icon name='checkmark-outline' size={15} color={'#fff'} style={{ top: item.status1 == 'Arriving' ? 10 : -15, fontWeight: 'bold' }} />
+                        <View style={[styles.line_style, { borderColor: '#777', }]}></View>
+                        <View style={[styles.circle_style, { backgroundColor: steps == 1 ? 'green' : '#777', borderColor: 'green' }]}>
+
+                            <Icon name='checkmark-outline' size={15} color={'#fff'} style={{ top: item.status1 == 'Arriving' ? 0 : 0, fontWeight: 'bold' }} />
+                        </View>
                         {item.status1 == 'Arriving' && <>
-                            <View style={[styles.line_style, { borderColor: 'green' }]}></View>
-                            <View style={[styles.circle_style, { backgroundColor: '#fff', borderColor: 'green' }]}></View>
+                            <View style={[styles.line_style, { borderColor: '#777' }]}></View>
+                            <View style={[styles.circle_style, { backgroundColor: '#fff', borderColor: steps === 1 ? '#000' : '#777' }]}>
+                                <Icon name='checkmark-outline' size={15} color={'#fff'} style={{ top: item.status1 == 'Arriving' ? 10 : -15, fontWeight: 'bold' }} />
+                            </View>
                         </>
                         }
+                        <View style={{ position: 'absolute' }}>
+                            <Animated.View style={[styles.line_style, { borderColor: 'green', marginTop: 15, height: progress1 }]}></Animated.View>
+                        </View>
                     </View>
                     <View style={styles.order_confirmed_second_container}>
                         <Text style={[styles.name_text_style, { fontSize: 14, color: '#000', }]}>Order Confirmed</Text>

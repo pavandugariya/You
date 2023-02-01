@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ButtonField from '../components/ButtonField'
 import { useNavigation } from '@react-navigation/native';
 import HomeModal from '../components/HomeModal';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { colors } from '../utils/color';
+import { getData } from '../api/axios/axiosApi';
 const data = [
     {
         name: 'Polishing',
@@ -47,9 +48,39 @@ const OrderHistory = () => {
     const [isEmpty, setisEmpty] = useState(false)
     const [Review, setReview] = useState('')
     const navigation = useNavigation();
+    const [orderData, setOrderData] = useState([])
+    useEffect(() => {
+        orderDataHandler()
+    }, [])
+
+
+    // fetch order data 
+    const orderDataHandler = async () => {
+        try {
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`)
+            const _arr_filter = res.filter((item) => {
+                let arr = []
+                if (item.status == 'completed') {
+                    arr.push(item.line_items)
+                    return item.line_items;
+                }
+                console.log(arr);
+            })
+            // console.log(_arr_filter);
+            setOrderData(_arr_filter.map((item) => {
+                return item.line_items;
+            }))
+            // setOrderData(_arr_filter)
+            console.log(orderData);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    //review handler
     const reviewHandler = (val) => {
         setReview(val);
     }
+    // click handler one item
     const clickHandler = (item) => {
         navigation.navigate('Order Details', {
             item: item
@@ -59,6 +90,7 @@ const OrderHistory = () => {
         <>
             {!isEmpty ?
                 <View style={styles.top_container}>
+
                     <FlatList
                         data={data}
                         renderItem={({ item, index }) => {

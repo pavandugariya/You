@@ -1,7 +1,7 @@
 const initialState = {
     //  count: 0,
     cartarray: [],
-    totalPrice: 0 / 100
+    totalPrice: 0.00 / 100
 };
 
 
