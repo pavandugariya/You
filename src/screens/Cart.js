@@ -54,7 +54,7 @@ const Cart = () => {
 
     }, [dumyCount])
     // console.log(reducerData.cartarray.length);
-
+    console.log(line_item);
 
     const incrementHandler = async (item, val) => {
         dispatch(increment(val))
@@ -127,18 +127,20 @@ const Cart = () => {
             "line_items": line_item
         }
         if (reducerData.cartarray.length > 0) {
+            const price = totalCardPrice
+            navigation.navigate('AddressPaymentDetails', { _line_item: dataObj, price: price })
 
-            try {
-                const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, dataObj);
-                const id = res.id;
-                const price = totalCardPrice
+            // try {
+            //     const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, dataObj);
+            //     const id = res.id;
+            //     const price = totalCardPrice
 
-                console.log(totalCardPrice, id);
-                id && navigation.navigate('AddressPaymentDetails', { id: id, price: price })
+            //     console.log(totalCardPrice, id);
+            //     id && navigation.navigate('AddressPaymentDetails', { id: id, price: price })
 
-            } catch (error) {
-                console.log(error);
-            }
+            // } catch (error) {
+            //     console.log(error);
+            // }
         }
         setShowIndicator(true)
     }
@@ -158,10 +160,10 @@ const Cart = () => {
                     <CustomHeader
                         icon_name='arrow-back-outline'
                         headerName={'Cart'}
-                        icon_size={26}
+                        icon_size={25}
                         // right_site_icon_name='trash-outline'
                         icon_color={'#000'}
-                        header_txt_size={25}
+                        header_txt_size={22}
                         backgroundColor={'#F5F5F8'}
                         onPressLeftIcon={async () => {
                             try {
@@ -190,7 +192,7 @@ const Cart = () => {
                         {/* box design */}
                         <View style={{ alignItems: 'center' }}>
 
-                            {reducerData.cartarray.map((item, index) => {
+                            {reducerData.cartarray && reducerData.cartarray.map((item, index) => {
                                 // { totalPrice = parseInt(item.price) + parseInt(totalPrice) }
                                 // console.log(item.item_key);
                                 return (
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
         height: 140,
         width: '95%',
         backgroundColor: '#fff',
-        marginVertical: 10,
+        marginVertical: 8,
         flexDirection: 'row',
         borderRadius: 10,
         // paddingHorizontal: 10,

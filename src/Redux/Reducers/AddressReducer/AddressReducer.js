@@ -1,23 +1,23 @@
 const initialState = {
     addressData: {
-        firstName: 'XYZ',
-        lastName: 'ABC',
-        addressOne: 'Madhya Pradesh India',
+        firstName: '',
+        lastName: '',
+        addressOne: '',
         addressTwo: '',
         city: '',
         state: '',
         country: '',
         pinCode: '',
-        mobileNo: 'xxxxxxxxxx',
-        BillingfirstName: 'Prem',
-        BillinglastName: 'Mehta',
-        BillingaddressOne: 'Codes For Tomorrow Veena nagar B-35 MR-10 Bhopal',
+        mobileNo: '',
+        BillingfirstName: '',
+        BillinglastName: '',
+        BillingaddressOne: '',
         BillingaddressTwo: '',
         Billingcity: '',
         Billingstate: '',
         Billingcountry: '',
         BillingpinCode: '',
-        BillingmobileNo: 'xxxxxxxxxx',
+        BillingmobileNo: '',
     },
     sameAddress: true,
 
@@ -39,6 +39,7 @@ const AddressReducer = (state = initialState, action) => {
                 sameAddress: action.payload,
             };
         case 'FIRST_NAME':
+            console.log('firs_name', action.payload);
             return {
                 ...state,
                 firstName: action.payload,

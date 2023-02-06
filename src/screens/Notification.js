@@ -58,7 +58,7 @@ const Notification = () => {
                         value={searchText}
                         onChangeText={(val) => searchHandler(val)}
                     />
-                    <Text style={{ marginHorizontal: 35, marginTop: 15, fontFamily: 'Raleway', fontSize: 17, color: colors._theme_primary_color }}>{`Notifications(${notificationD.length})`}</Text>
+                    <Text style={{ marginHorizontal: 35, marginTop: 15, fontFamily: 'Raleway', fontSize: 17, color: colors._theme_primary_color }}>{`Notifications (${notificationD.length})`}</Text>
                     <View style={styles.top_container}>
                         <FlatList
                             data={notificationD}

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { postData } from '../api/axios/axiosApi';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RestoreToken, isLoadingSet, setEmailId } from '../Redux/Action/AuthAction/AuthAction';
+import { RestoreToken, isLoadingSet, setEmailId, setUserId } from '../Redux/Action/AuthAction/AuthAction';
 
 const LoginScreen = () => {
     const [userName, setUserName] = useState('');
@@ -40,8 +40,11 @@ const LoginScreen = () => {
         try {
             const res = await AsyncStorage.setItem('userToken', value.token)
             const email = await AsyncStorage.setItem('userEmail', value.user_email)
+            const userId = await AsyncStorage.setItem('userID', value.user_id)
+            console.log(userId, 'userID...>', value.user_id);
             dispatch(RestoreToken(value.token))
             dispatch(setEmailId(value.user_email))
+            dispatch(setUserId(value.user_id));
 
         } catch (e) {
             console.log(e);

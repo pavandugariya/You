@@ -1,49 +1,41 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { ScrollView } from 'react-native-gesture-handler';
-const countries = [
-    { country: 'Afghanistan', code: '93', iso: 'AF' },
-    { country: 'China', code: '86', iso: 'CN' },
-    { country: 'India', code: '91', iso: 'IN' },
-    { country: 'Iran', code: '98', iso: 'IR' },
-    { country: 'United States', code: '1', iso: 'US' },
-];
-const CustomDropdown = () => {
 
-    const [isSelected, setisSelected] = useState(false)
-    const [selectedValue, setSelectedValue] = useState('Select Country')
-    const [data, setdata] = useState(countries)
+const CustomDropdown = ({ selectedValue, isSelected, setisSelected, onPressTop,
+    dropDownData, setSelectedValue, funchange }) => {
     return (
         <>
-            <TouchableOpacity style={styles.top_container} onPress={() => {
-                setisSelected(!isSelected)
-            }}>
+            <TouchableOpacity style={styles.top_container} onPress={onPressTop}  >
                 <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{selectedValue} </Text>
                 {
                     isSelected == false ?
-                        <Icon name='caret-up-outline' size={30} />
-                        : <Icon name='caret-down-outline' size={30} />
+                        <Icon name='chevron-down-outline' size={25} />
+                        : <Icon name='chevron-up-outline' size={25} />
                 }
             </TouchableOpacity>
             {isSelected == true &&
-                <View style={styles.bottom_container}>
-                    {data.map((item, index) => {
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled={true}
+                    style={styles.bottom_container}>
+                    {dropDownData.map((item, index) => {
                         return (
                             <TouchableOpacity
+                                key={index}
                                 style={styles.bottom_inner_container}
                                 onPress={() => {
-                                    setSelectedValue(item.country)
+                                    setSelectedValue(item)
                                     setisSelected(!isSelected)
                                 }}
                             >
-                                <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{item.country}</Text>
+                                <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{item}</Text>
                                 {/* <Text style={{ fontSize: 15, fontFamily: 'Raleway', color: '#000' }}>{item.country}</Text> */}
                             </TouchableOpacity>
                         )
                     })}
 
-                </View>
+                </ScrollView>
             }
         </>
     )
@@ -53,7 +45,7 @@ export default CustomDropdown
 
 const styles = StyleSheet.create({
     top_container: {
-        width: '84%',
+        width: '100%',
         height: 50,
         alignSelf: 'center',
         alignItems: 'center',
@@ -66,23 +58,36 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     bottom_container: {
-        width: '84%',
+        width: '100%',
         height: 250,
         alignSelf: 'center',
         borderRadius: 10,
-        backgroundColor: '#f2f5f5f5',
+        // backgroundColor: '#f2f5f5f5',
         shadowColor: '#5856d9',
         shadowOpacity: 1,
         shadowRadius: 10,
-        marginTop: 5
+        marginTop: 5,
+        // paddingHorizontal: 10,
     },
     bottom_inner_container: {
         width: '90%',
         height: 40,
-        borderBottomWidth: 0.2,
-        borderBottomColor: '#8e8e8e',
+        // borderBottomWidth: 0.2,
+        backgroundColor: '#fff',
         alignSelf: 'center',
         justifyContent: 'center',
-        paddingLeft: 10
+        paddingLeft: 10,
+        marginVertical: 5,
+        borderRadius: 10,
+
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 4.65,
+
+        elevation: 6,
     }
 })

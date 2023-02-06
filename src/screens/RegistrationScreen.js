@@ -26,7 +26,7 @@ const RegistrationScreen = () => {
                 if (res.status == 'fail') {
                     alert(res.message)
                 } else {
-                    alert('Your accout create is ' + res.status)
+                    alert('your account has been created successfully you can now logIn ')
                     navigation.navigate('SignIn')
                 }
                 // console.log(res);

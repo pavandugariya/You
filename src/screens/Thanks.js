@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -38,6 +38,7 @@ const Thanks = (props) => {
         }, 3000);
 
     }, [])
+    // fetch order data from api 
     const getOrderData = async () => {
         try {
             const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders/${id}`)
@@ -51,6 +52,7 @@ const Thanks = (props) => {
         }
     }
 
+    // customer order information  share reciept handler 
     const myCustomShare = async () => {
         const shareOption = {
             url: image,
@@ -65,8 +67,7 @@ const Thanks = (props) => {
         }
     }
     return (
-        <View style={styles.container}>
-
+        <ScrollView style={styles.container}>
             <ViewShot
                 ref={ref}
                 options={{ fileName: "Your Order receipt", format: "jpg", quality: 0.9 }}
@@ -80,13 +81,14 @@ const Thanks = (props) => {
                 </Animatable.View>
                 <Text style={styles.txt_style}>Shipping address</Text>
                 <View style={styles.shipping_box}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                         <Icon name='location-outline' size={24} color={'#5956E9'} />
                         <Text style={styles.txt_style2}> {orderData.billing && orderData.shipping.address_1} </Text>
                     </View>
+                    <View style={{ marginVertical: 8 }}></View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Icon name='call-outline' size={24} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}>+91  {orderData.billing && orderData.shipping.phone}</Text>
+                        <Text style={styles.txt_style2}>+91 {orderData.billing && orderData.shipping.phone}</Text>
                     </View>
                 </View>
                 <Text style={styles.txt_style}>Billing address</Text>
@@ -95,9 +97,10 @@ const Thanks = (props) => {
                         <Icon name='location-outline' size={24} color={'#5956E9'} />
                         <Text style={styles.txt_style2}>  {orderData.billing && orderData.billing.address_1} </Text>
                     </View>
+                    <View style={{ marginVertical: 8 }}></View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Icon name='call-outline' size={24} color={'#5956E9'} />
-                        <Text style={styles.txt_style2}>+91  {orderData.billing && orderData.billing.phone}</Text>
+                        <Text style={styles.txt_style2}>+91 {orderData.billing && orderData.billing.phone}</Text>
                     </View>
                 </View>
                 {/* Order Summary */}
@@ -131,19 +134,22 @@ const Thanks = (props) => {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.share_btn}
-                    onPress={() => myCustomShare()}
-                >
-                    <Icon name='share-social-outline' size={30} color={'green'} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.continue_shopping_btn}
-                    onPress={() => navigation.navigate('Home')}
-                >
-                    <Text style={{ fontSize: 16, color: '#fff', fontWeight: 'bold', fontFamily: 'Raleway' }}>Continue shoppings</Text>
-                </TouchableOpacity>
+                <View style={styles.bottom_top_container_style}>
+                    <TouchableOpacity
+                        style={styles.continue_shopping_btn}
+                        onPress={() => navigation.navigate('Home')}
+                    >
+                        <Text style={{ fontSize: 16, color: '#fff', fontWeight: 'bold', fontFamily: 'Raleway' }}>Continue shoppings</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.share_btn}
+                        onPress={() => myCustomShare()}
+                    >
+                        <Icon name='share-social-outline' size={30} color={'green'} />
+                    </TouchableOpacity>
+                </View>
             </ViewShot>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -154,41 +160,42 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors._bg_color,
         paddingHorizontal: 20,
-        paddingVertical: 20,
-
+        paddingVertical: 40,
     },
     top_container: {
         backgroundColor: '#F5F5F8',
         height: 160,
         marginHorizontal: 10,
-        marginVertical: 10,
+        marginVertical: 0,
         alignItems: 'center',
-        top: 10,
+        // top: 10,
     },
     shipping_box: {
-        paddingVertical: 15,
+        paddingVertical: 20,
         backgroundColor: '#fff',
         borderRadius: 15,
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
+        marginVertical: 10,
+
     },
     txt_style: {
         fontSize: 17,
         fontFamily: 'Raleway',
         color: '#000',
-        marginVertical: 5,
+        marginBottom: 10,
         fontWeight: 'bold'
     },
     txt_style2: {
         fontSize: 16,
         fontFamily: 'Raleway',
         color: '#000',
-        marginHorizontal: 20,
-        marginVertical: 5
+        marginHorizontal: 15,
+        // marginBottom: 10,
     },
     order_top_container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 10,
+        paddingHorizontal: 18,
     },
     order_inner_first_container: {
         margin: 5
@@ -204,9 +211,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway'
     },
     share_btn: {
-        position: 'absolute',
-        right: 50,
-        bottom: -80
+        flex: 1,
+        alignItems: 'flex-end'
     },
     continue_shopping_btn: {
         height: 50,
@@ -215,9 +221,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        bottom: -90,
-        right: 100
+    },
+    bottom_top_container_style: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 30,
+        paddingBottom: 30,
+        paddingHorizontal: 20
+
+
     }
 
 

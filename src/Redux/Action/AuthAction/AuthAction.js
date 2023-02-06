@@ -18,3 +18,10 @@ export const setEmailId = (value) => {
         payload: value,
     };
 };
+
+export const setUserId = (value) => {
+    return {
+        type: 'SET_USER_ID',
+        payload: value,
+    };
+};

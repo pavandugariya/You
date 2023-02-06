@@ -31,7 +31,8 @@ const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
     const ReducerData = useSelector((state) => state.AuthR);
     const ReducerCardData = useSelector((state) => state.CartR);
-    const badgesCount = ReducerCardData.cartarray.length;
+    const badgesCount = ReducerCardData.cartarray ? ReducerCardData.cartarray.length : 0;
+    // const badgesCount = 0;
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const net = useNetInfo();
@@ -65,7 +66,9 @@ const StackNavigator = () => {
                                     ),
                                 }}
                             />
-                            <Stack.Screen name="EditAddress" component={EditAddress} />
+                            <Stack.Screen name="EditAddress" component={EditAddress}
+                                options={{ title: 'Update Address' }}
+                            />
 
                             <Stack.Screen name="Order History" component={OrderHistory} />
                             <Stack.Screen name="Order Details" component={OrderDetails} />

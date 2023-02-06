@@ -2,11 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // get data from api 
-const getData = async (url, params = {}) => {
+const getData = async (url, options) => {
     const val = await getUserTokenData();
     // console.log(val);
     const res = await axios.get(url, {
-        params,
+        // params,
         // auth: {
         //     Token: val.toString(),
         // }
@@ -14,7 +14,7 @@ const getData = async (url, params = {}) => {
         //     username: 'ck_06c35b09db8d7b4fb0bd91d99ce337d38c533795',
         //     password: 'cs_83d0adc0cdcc037b5d96ec401091f33ac6364cae',
         // }
-        headers: { Authorization: `Bearer ${val}` }
+        headers: { Authorization: `Bearer ${val}`, ...options }
     }).catch(err => {
         console.log(err, 'error');
         return err;
@@ -80,6 +80,23 @@ const putData = async (url, data) => {
     return res;
 }
 
+// post the addres // profile data 
+const postAddressData = async (url, data) => {
+    const res = await axios.post(url, data,
+        {
+            auth: {
+                username: 'ck_06c35b09db8d7b4fb0bd91d99ce337d38c533795',
+                password: 'cs_83d0adc0cdcc037b5d96ec401091f33ac6364cae',
+            }
+        }
+
+    ).catch(err => {
+        console.log(err, 'error');
+        return err;
+    });
+    return res.data;
+}
+// get user token
 const getUserTokenData = async () => {
     try {
         const value = await AsyncStorage.getItem('userToken')
@@ -90,4 +107,4 @@ const getUserTokenData = async () => {
     }
 }
 
-export { getData, postData, deleteData, postDataSecond, putData };
+export { getData, postData, deleteData, postDataSecond, putData, postAddressData };

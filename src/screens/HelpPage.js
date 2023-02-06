@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity, Linking, Platform, TextInput, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../utils/color';
 import Icon from 'react-native-vector-icons/Ionicons'
 import CustomInputField from '../components/CustomInputField';
 import ButtonField from '../components/ButtonField';
 import { useNavigation } from '@react-navigation/native';
+// import { Notifications } from 'react-native-notifications';
+
 
 const HelpPage = () => {
 
@@ -12,6 +14,36 @@ const HelpPage = () => {
     const phoneNum = 9981111501;
     const email = 'nitinmotors1989@gmail.com';
     const mapAddress = '4 Mangal Nagar, opposite Maa Kankeshwari Garba Ground, near Bapat Square, Indore, Madhya Pradesh 452010';
+    // useEffect(() => {
+    //     getNotification()
+    // }, [])
+    const getNotification = async () => {
+        Notifications.registerRemoteNotifications();
+        // const Notification = await Notifications.getInitialNotification();
+        Notifications.postLocalNotification({
+            body: 'You Buy Anything Get 50% off',
+            title: 'Local Notification Title',
+            sound: 'chime.aiff',
+            category: 'SOME_CATEGORY',
+            link: 'localNotificationLink',
+            // fireDate: new Date() // only iOS
+        }, 1);
+
+        // Notifications.setNotificationChannel({
+        //     channelId: 'my-channel',
+        //     name: 'My Channel',
+        //     importance: 5,
+        //     description: 'My Description',
+        //     enableLights: true,
+        //     enableVibration: true,
+        //     groupId: 'my-group', // optional
+        //     groupName: 'My Group', // optional, will be presented in Android OS notification permission
+        //     showBadge: true,
+        //     soundFile: 'custom_sound.mp3',  // place this in <project_root>/android/app/src/main/res/raw/custom_sound.mp3
+        //     vibrationPattern: [200, 1000, 500, 1000, 500],
+        // })
+    }
+
     const callHandler = (number) => {
         let phoneNumber = '';
         if (Platform.OS === 'android') { phoneNumber = `tel:${number}`; }

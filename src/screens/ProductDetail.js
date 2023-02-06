@@ -72,7 +72,8 @@ const ProductDetail = (props) => {
     const GetProductData = async () => {
         try {
             // console.log('data' + id);
-            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products/${id}`)
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products/${id}?url_type=dynamic_url`, { url_type: "dynamic_product" })
+            // console.log(res);
             setShowIndicator(false);
             // setProductData(res)
             setitems(res)
@@ -99,21 +100,20 @@ const ProductDetail = (props) => {
                 {
                     "product_id": items.id,
                     "quantity": quantity != 0 ? quantity : 1,
-                },
-
-
-            ]
+                },]
         }
-        try {
-            const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, dataObj);
-            const id = res.id;
-            const price = res.total;
-            console.log(res);
-            id && navigation.navigate('AddressPaymentDetails', { id: id, price: price })
+        const price = items.price;
+        navigation.navigate('AddressPaymentDetails', { _line_item: dataObj, price: price })
+        // try {
+        //     const res = await postDataSecond(`https://automart.codesfortomorrow.com/wp-json/wc/v3/orders`, dataObj);
+        //     const id = res.id;
+        //     const price = res.total;
+        //     console.log(res);
+        //     id && navigation.navigate('AddressPaymentDetails', { id: id, price: price })
 
-        } catch (error) {
-            console.log(error);
-        }
+        // } catch (error) {
+        //     console.log(error);
+        // }
 
         setShowIndicator(true)
     }

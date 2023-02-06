@@ -79,29 +79,42 @@ const Category = () => {
         setShowIndicator(true);
         setActive('1');
         try {
-            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products?category=${id}&tag=86`)
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products?category=${id}&tag=86?url_type=dynamic_url`, { url_type: "dynamic_product" })
 
             // const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products?category=81&tag=86`)
+            // console.log(res);
             setShowIndicator(false);
             // let filterArray = res.filter((item) => item.categories[0].slug === slug)
-            setProductData(res.map(product => {
-                let cartQuantity = 0;
-                let item_key = null
-                ReducerCardData.cartarray.map(item => {
-                    if (item.id == product.id) {
-                        cartQuantity = item.quantity.value
-                        // cartQuantity++
-                        item_key = item.item_key
+            if (ReducerCardData.cartarray === undefined || ReducerCardData.cartarray.length <= 0) {
+                setProductData(res.map(product => {
+                    let cartQuantity = 0;
+                    let item_key = null
+                    return {
+                        ...product,
+                        cartQuantity,
+                        item_key,
                     }
-                })
-                return {
-                    ...product,
-                    cartQuantity,
-                    item_key,
-                }
+                }))
+            } else {
 
-            }))
+                setProductData(res.map(product => {
+                    let cartQuantity = 0;
+                    let item_key = null
+                    ReducerCardData.cartarray.map(item => {
+                        if (item.id == product.id) {
+                            cartQuantity = item.quantity.value
+                            // cartQuantity++
+                            item_key = item.item_key
+                        }
+                    })
+                    return {
+                        ...product,
+                        cartQuantity,
+                        item_key,
+                    }
 
+                }))
+            }
         } catch (error) {
             console.log(error + 'errors');
         }
@@ -113,26 +126,40 @@ const Category = () => {
 
         try {
             const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products?category=${id}&tag=85`)
+            // console.log('economy...>', ReducerCardData.cartarray);
+
             setShowIndicator(false);
             // let filterArray = res.filter((item) => item.categories[0].slug === slug)
-            setProductData(res.map(product => {
-                let cartQuantity = 0;
-                let item_key = null
-                ReducerCardData.cartarray.map(item => {
-                    if (item.id == product.id) {
-                        cartQuantity = item.quantity.value
-                        // cartQuantity++
-                        item_key = item.item_key
+            if (ReducerCardData.cartarray === undefined || ReducerCardData.cartarray.length <= 0) {
+                console.log('if...economy');
+                setProductData(res.map(product => {
+                    let cartQuantity = 0;
+                    let item_key = null
+                    return {
+                        ...product,
+                        cartQuantity,
+                        item_key,
                     }
-                })
-                return {
-                    ...product,
-                    cartQuantity,
-                    item_key,
-                }
+                }))
+            } else {
+                setProductData(res.map(product => {
+                    let cartQuantity = 0;
+                    let item_key = null
+                    ReducerCardData.cartarray.map(item => {
+                        if (item.id == product.id) {
+                            cartQuantity = item.quantity.value
+                            // cartQuantity++
+                            item_key = item.item_key
+                        }
+                    })
+                    return {
+                        ...product,
+                        cartQuantity,
+                        item_key,
+                    }
 
-            }))
-
+                }))
+            }
         } catch (error) {
             console.log(error + 'errors');
         }
@@ -177,7 +204,7 @@ const Category = () => {
 
     const getCardData = async () => {
         try {
-            const res = await getData('https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart');
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart?url_type=dynamic_url`, { url_type: "dynamic_product" });
             dispatch(addArrayElemets(res.items));
             // GetCategoryProductData();
 
@@ -238,7 +265,7 @@ const Category = () => {
 
     return (
         <Animatable.View style={styles.container}
-            animation={'slideInRight'}     >
+            animation={'slideInLeft'}     >
             {
                 showIndicator == true ? <ActivityIndicator size={50}
                     style={{ position: 'absolute', alignItems: 'center', top: '50%', left: '45%', justifyContent: 'center', zIndex: 1 }} /> : ''
@@ -340,7 +367,7 @@ const Category = () => {
                             return (
                                 // slug == item.categories[0].id ?
                                 <Animatable.View key={index}
-                                    animation={'zoomIn'}
+                                    animation={'fadeInUp'}
                                     style={styles.box_inner_container}
                                     onPress={() => { navigation.navigate('Category') }}>
                                     <TouchableOpacity
@@ -348,7 +375,8 @@ const Category = () => {
                                         onPress={() => navigation.navigate('ProductDetail', { id: item.id, quantity: item.cartQuantity, categories: item.categories[0].name })}>
                                         <ImageBackground
                                             style={{ height: '100%', width: '100%' }}
-                                            source={require('../../assets/images/bg11.jpg')}>
+                                        // source={require('../../assets/images/bg12.jpg')}
+                                        >
 
                                             <Image
                                                 source={{ uri: item.images ? item.images[0].src : 'https://cdn-icons-png.flaticon.com/512/9184/9184014.png' }}

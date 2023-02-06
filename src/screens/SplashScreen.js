@@ -4,15 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RestoreToken, isLoadingSet, setEmailId } from '../Redux/Action/AuthAction/AuthAction';
+import { RestoreToken, isLoadingSet, setEmailId, setUserId } from '../Redux/Action/AuthAction/AuthAction';
 import { decrement, increment, addArrayElemets, deleteArrayElemets } from '../Redux/Action/CartAction/CartAction';
 import fetchDataProduct, { getData } from '../api/axios/axiosApi';
+import { AddAddressHandler } from '../Redux/Action/AddressAction/AddressAction';
 
 const SplashScreen = () => {
     const navigation = useNavigation();
     const ReducerData = useSelector((state) => state.AuthR);
     const ReducerThemeData = useSelector((state) => state.ThemeR);
     const CardReducerData = useSelector((state) => state.CartR);
+    // console.log(ReducerData, 'reducerData...>');
     const dispatch = useDispatch();
     const [isLogin, setisLogin] = useState(false)
     useEffect(() => {
@@ -45,9 +47,17 @@ const SplashScreen = () => {
             const value = await AsyncStorage.getItem('userToken')
             console.log(value + ' <= token');
             const email = await AsyncStorage.getItem('userEmail')
-            // console.log(email);
+            console.log(email);
+            const userID = await AsyncStorage.getItem('userID')
+            const userI = await AsyncStorage.getAllKeys();
+            console.log(userID);
+
             dispatch(RestoreToken(value))
             dispatch(setEmailId(email))
+            dispatch(setUserId(userID));
+            if (userID > 0) {
+                getUserProfilData(userID);
+            }
             if (value !== null) {
                 getCardData();
             }
@@ -60,10 +70,41 @@ const SplashScreen = () => {
     // get all card  data from api 
     const getCardData = async () => {
         try {
-            const res = await getData('https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart');
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/cocart/v2/cart?url_type=dynamic_url`, { url_type: "dynamic_product" });
             dispatch(addArrayElemets(res.items));
         } catch (error) {
             console.log(error);
+        }
+    }
+    // get user profile data from api....
+    const getUserProfilData = async (userId) => {
+        try {
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v2/customers/${userId}`);
+            // console.log(res);
+            const dataObj = {
+                firstName: res.shipping.first_name,
+                lastName: res.shipping.last_name,
+                addressOne: res.shipping.address_1,
+                addressTwo: res.shipping.address_2,
+                city: res.shipping.city,
+                state: res.shipping.state,
+                country: res.shipping.country,
+                pinCode: res.shipping.postcode,
+                mobileNo: res.shipping.phone,
+                BillingfirstName: res.billing.firs_name,
+                BillinglastName: res.billing.last_name,
+                BillingaddressOne: res.billing.address_1,
+                BillingaddressTwo: res.billing.address_2,
+                Billingcity: res.billing.city,
+                Billingstate: res.billing.state,
+                Billingcountry: res.billing.country,
+                BillingpinCode: res.billing.postcode,
+                BillingmobileNo: res.billing.phone,
+            }
+            dispatch(AddAddressHandler(dataObj));
+            // console.log(dataObj);
+        } catch (error) {
+            console.log(error, 'get user profile data.....>error ...? splashScreen');
         }
     }
 

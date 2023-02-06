@@ -16,6 +16,7 @@ const Tab = createMaterialBottomTabNavigator();
 const BottomNavigator = () => {
     const ReducerCardData = useSelector((state) => state.CartR);
     const badgesCount = ReducerCardData.cartarray.length;
+    // const badgesCount = 0;
     return (
         <Tab.Navigator
             activeColor="#f0edf6"

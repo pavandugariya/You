@@ -37,13 +37,14 @@ const Home = () => {
     ];
     const ReducerCardData = useSelector((state) => state.CartR);
     const reducerData = useSelector((state) => state.ThemeR);
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [searchInputText, setsearchInputText] = useState('')
     const [showIndicator, setShowIndicator] = useState(true)
     const [modalVisible, setModalVisible] = useState(true)
-    const [filterData, setFilterData] = useState();
-    const [metaData, setMetadata] = useState();
+    const [filterData, setFilterData] = useState([]);
+    const [metaData, setMetadata] = useState([]);
 
     useEffect(() => {
         getCategorydata();
@@ -81,7 +82,8 @@ const Home = () => {
     }
     const getCategorydata = async () => {
         try {
-            const res = await getData('https://automart.codesfortomorrow.com/wp-json/wc/v3/products/categories')
+            const res = await getData(`https://automart.codesfortomorrow.com/wp-json/wc/v3/products/categories?url_type=dynamic_url`, { url_type: "dynamic_product" })
+            // console.log(res);
             if (res !== undefined) {
                 setShowIndicator(false);
             }
